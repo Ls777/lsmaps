@@ -1,9 +1,10 @@
 module.exports = function(app, db) {
-  app.get('/maps/:id', (req, res) => {
+  app.get('/themes/:id', (req, res) => {
     const mapId = req.params.id
     db.getMap(mapId)
       .then(data => res.send(data))
       .catch(error => res.send(error))
+
   })
 
   app.delete('/maps/:id', (req, res) => {
