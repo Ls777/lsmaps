@@ -3,11 +3,16 @@ module.exports = function(app, db) {
     const mapId = req.params.id
     db.getMap(mapId)
       .then(data => res.send(data))
-      .catch(err => res.send(err))
+      .catch(error => res.send(error))
 
   })
 
-
+  app.delete('/maps/:id', (req, res) => {
+    const mapId = req.params.id
+    db.deleteMap(mapId)
+      .then(result => res.send(result))
+      .catch(error => res.send({ 'error' : error})) 
+  })
 
   app.post('/maps', (req, res) => {
     const { name, url, description, themeId } = req.body;
@@ -16,13 +21,18 @@ module.exports = function(app, db) {
       return
     }
 
-    db.newMap(name, url, description, themeId, (error, result) => {
-      if (error) {
-        res.send({ 'error' : error})
-      } else {
-        res.send({ 'mapId' : result.insertId })
-      }
+    db.newMap(name, url, description, themeId)
+      .then(result => res.send({ 'mapId' : result.insertId }))
+      .catch(error => res.send({ 'error' : error}))
+  })
 
-    })
+
+  app.put('/maps/:id', (req, res) => {
+    const mapId = req.params.id
+    const {themeId, ...body } = req.body;
+    
+    db.updateMap(mapId, {theme_id: themeId, ...body})
+      .then(result => res.send(result))
+      .catch(error => res.send({ 'error' : error})) 
   })
 }

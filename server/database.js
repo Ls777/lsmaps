@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const hashids = require('hashids')
-const hashid = new hashids('lsmaps', 8)
 
 class database{
   constructor() {
@@ -10,10 +9,14 @@ class database{
       password : 'lsmapszsqox',
       database : 'lsmaps'
     });
+
+    this.hashid = new hashids('lsmaps', 8)
   
     this.connection.connect();
     this.createTables();
-    this.newTheme('default', `{"theme": "yes"}`)
+    this.initializeDefaultTheme();
+    
+    
   }
 
   createTables() {
@@ -61,73 +64,97 @@ class database{
     })
   }
 
-  newRow(table, args, callback) {
-    let queryString = `INSERT INTO ${table} VALUES (`
-    const values = [null]
+  initializeDefaultTheme() {
+    const queryString = `SELECT * FROM themes WHERE id = 1`
+      this.connection.query(queryString, (error, rows, fields) => {
+        if (error) console.log(error)
+        if (rows.length == 0) {
+          this.newTheme('default', `{"theme": "yes"}`)
+        }
+      })
+  }
 
-    for (let key in args) {
-      queryString += `?, `
-      values.push(args[key])
-    }
+  newRow(table, args) {
+    return new Promise((resolve, reject) => {
+      let queryString = `INSERT INTO ${table} VALUES (`
+      const values = [null]
 
-    queryString += '?)'
+      for (let key in args) {
+        queryString += `?, `
+        values.push(args[key])
+      }
 
-    this.connection.query(queryString, values, callback)
+      queryString += '?)'
+
+      this.connection.query(queryString, values, (error, result, fields) => {
+        if (error) {
+          return reject(error)
+        }
+
+        resolve(result)
+      })
+    })
   }
 
   updateRow(id, table, args) {
-    let queryString = `UPDATE ${table} SET `
-    const values = [];
-    
-    for (let key in args) {
-      queryString += `${key} = ?, `
-      values.push(args[key])
-    }
-    queryString = queryString.slice(0, -2)
-    queryString += ' WHERE id = ?'
-
-    this.connection.query(queryString, [...values, id], (error, results, fields) => {
-        if (error) throw error;
-        console.log(`update row ${table}: `, results[0]);
+    return new Promise((resolve, reject) => {
+      let queryString = `UPDATE ${table} SET `
+      const values = [];
+      
+      for (let key in args) {
+        queryString += `${key} = ?, `
+        values.push(args[key])
       }
-    )
+      queryString = queryString.slice(0, -2)
+      queryString += ' WHERE id = ?'
+  
+      this.connection.query(queryString, [...values, id], (error, result, fields) => {
+          if (error) {
+            return reject(error)
+          }
+          resolve(result)
+        }
+      )
+    })
   }
 
-  newMarker(mapID, lat, long, name = "anonymous", url = null, description = null, color = null) {
-    this.newRow('markers', {lat, long, name, url, description, color, mapID})
+  newMarker(mapId, lat, long, name = "anonymous", url = null, description = null, color = null) {
+    return this.newRow('markers', {lat, long, name, url, description, color, mapId})
   }
 
-  newMap(name, url = null, description = null, themeId = 1, callback) {
-    this.newRow('maps', {name, url, description, themeId}, callback)
+  newMap(name, url = null, description = null, themeId = 1) {
+    return this.newRow('maps', {name, url, description, themeId})
   }
 
   newTheme(name, theme) {
-    this.newRow('themes', {name, theme})
+    return this.newRow('themes', {name, theme})
   }
 
-  updateMap(mapID, args) {
-    this.updateRow(mapID, 'maps', args)
+  updateMap(mapId, args) {
+    return this.updateRow(mapId, 'maps', args)
   }
 
-  updateMarker(markerID, args) {
-    this.updateRow(markerID, 'markers', args)
+  updateMarker(markerId, args) {
+    return this.updateRow(markerId, 'markers', args)
   }
 
   deleteRow(id, table) {
-    let queryString = `DELETE FROM ${table} WHERE id = ?;`
-    this.connection.query(queryString, id, (error, results, fields) => {
-        if (error) throw error;
-        console.log('bby map bby: ', results[0]);
-      }
-    )
+    return new Promise((resolve, reject) => {
+      let queryString = `DELETE FROM ${table} WHERE id = ?;`
+      this.connection.query(queryString, id, (error, results, fields) => {
+          if (error) {reject(error)}
+          else resolve(results)
+        }
+      )
+    })
   }
 
-  deleteMap(mapID) {
-    this.deleteRow(mapID, 'maps')
+  deleteMap(mapId) {
+    return this.deleteRow(mapId, 'maps')
   }
 
-  deleteMarker(markerID) {
-    this.deleteRow(markerID, 'markers')
+  deleteMarker(markerId) {
+    return this.deleteRow(markerId, 'markers')
   }
 
   printTables() {
@@ -138,13 +165,13 @@ class database{
     });
   }
 
-  getMap(mapID) {
+  getMap(mapId) {
     return new Promise((resolve, reject) => {
       const queryString = `SELECT * FROM maps WHERE id = ?`
 
-      this.connection.query(queryString, mapID, (err, rows, fields) => {
-        if (err) {
-          return reject(err)
+      this.connection.query(queryString, mapId, (error, rows, fields) => {
+        if (error) {
+          return reject(error)
         }
 
         if (rows.length == 0) {
@@ -156,13 +183,13 @@ class database{
     })
   }
 
-  getMarkersFromMap(mapID) {
+  getMarkersFromMap(mapId) {
     return new Promise((resolve, reject) => {
       const queryString = `SELECT * FROM markers WHERE map_id = ?`
 
-      this.connection.query(queryString, mapID, (err, rows, fields) => {
-        if (err) {
-            return reject(err);
+      this.connection.query(queryString, mapId, (error, rows, fields) => {
+        if (error) {
+            return reject(error);
         }
 
         resolve(rows);
