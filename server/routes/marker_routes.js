@@ -14,13 +14,13 @@ module.exports = function(app, db) {
   })
 
   app.post('/markers', (req, res) => {
-    const { lat, long, name, url, description, color, mapId } = req.body;
-    if (name == null) {
-      res.send({ 'error' : 'marker needs a name'})
+    const { lat, lng, name, url, description, color, mapId } = req.body;
+    if (mapId == null || lat == null || lng == null) {
+      res.send({ 'error' : 'missing required infe'})
       return
     }
 
-    db.newMarker(lat, long, name, url, description, color, mapId)
+    db.newMarker(mapId, lat, lng, name, url, description, color)
       .then(result => res.send({ 'markerId' : result.insertId }))
       .catch(error => res.send({ 'error' : error}))
   })
@@ -30,7 +30,7 @@ module.exports = function(app, db) {
     const markerId = req.params.id
     const {mapId, ...body } = req.body;
     
-    db.updateMap(markerId, {map_id: mapId, ...body})
+    db.updateMarker(markerId, {map_id: mapId, ...body})
       .then(result => res.send(result))
       .catch(error => res.send({ 'error' : error})) 
   })

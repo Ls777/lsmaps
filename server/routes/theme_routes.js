@@ -1,37 +1,37 @@
 module.exports = function(app, db) {
   app.get('/themes/:id', (req, res) => {
-    const mapId = req.params.id
-    db.getMap(mapId)
+    const themeId = req.params.id
+    db.getTheme(themeId)
       .then(data => res.send(data))
       .catch(error => res.send(error))
 
   })
 
-  app.delete('/maps/:id', (req, res) => {
-    const mapId = req.params.id
-    db.deleteMap(mapId)
+  app.delete('/themes/:id', (req, res) => {
+    const themeId = req.params.id
+    db.deleteTheme(themeId)
       .then(result => res.send(result))
       .catch(error => res.send({ 'error' : error})) 
   })
 
-  app.post('/maps', (req, res) => {
-    const { name, url, description, themeId } = req.body;
-    if (name == null) {
-      res.send({ 'error' : 'map needs a name'})
+  app.post('/themes', (req, res) => {
+    const { name, theme } = req.body;
+    if (name == null || theme == null) {
+      res.send({ 'error' : 'missing fields'})
       return
     }
 
-    db.newMap(name, url, description, themeId)
-      .then(result => res.send({ 'mapId' : result.insertId }))
+    db.newTheme(name, theme)
+      .then(result => res.send({ 'themeId' : result.insertId }))
       .catch(error => res.send({ 'error' : error}))
   })
 
 
-  app.put('/maps/:id', (req, res) => {
-    const mapId = req.params.id
-    const {themeId, ...body } = req.body;
+  app.put('/themes/:id', (req, res) => {
+    const themeId = req.params.id
+    const { name, theme } = req.body;
     
-    db.updateMap(mapId, {theme_id: themeId, ...body})
+    db.updateTheme(themeId, { name, theme })
       .then(result => res.send(result))
       .catch(error => res.send({ 'error' : error})) 
   })

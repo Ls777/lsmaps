@@ -83,8 +83,8 @@ class database{
     })
   }
 
-  newMarker(mapId, lat, long, name = "anonymous", url = null, description = null, color = null) {
-    return this.newRow('markers', {lat, long, name, url, description, color, mapId})
+  newMarker(mapId, lat, lng, name = "anonymous", url = null, description = null, color = null) {
+    return this.newRow('markers', {lat, lng, name, url, description, color, mapId})
   }
 
   newMap(name, url = null, description = null, themeId = 1) {
@@ -166,7 +166,7 @@ class database{
         }
 
         if (results.length == 0) {
-          return reject({'error': 'map not found'})
+          return reject({'error': 'data not found'})
         }
 
         resolve(results)
@@ -180,6 +180,10 @@ class database{
 
   getMarker(markerId) {
     return this.getRow(markerId, 'markers')
+  }
+
+  getTheme(themeId) {
+    return this.getRow(themeId, 'themes')
   }
 
   getMarkersFromMap(mapId) {
