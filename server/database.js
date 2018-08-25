@@ -27,6 +27,10 @@ class database{
       this.createTables();
       this.initializeDefaultTheme();
     });
+
+    this.keepAlive = setInterval(() => {
+      this.connection.query('SELECT 1');
+    }, 3600000);
   }
 
   createTables() {
