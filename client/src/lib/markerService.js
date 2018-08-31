@@ -1,9 +1,9 @@
 import axios from 'axios'
 const querystring = require('querystring')
 
-export const getMap = async id => {
+export const getMarkers = async id => {
   try {
-    const response = await axios.get(`/maps/${id}`)
+    const response = await axios.get(`/markers/bymap/${id}`)
     console.log(response.data)
     return response.data
   } catch (err) {
@@ -14,9 +14,12 @@ export const getMap = async id => {
   }
 }
 
-export const createMap = async map => {
+export const createMarker = async marker => {
   try {
-    const response = await axios.post('/maps/', querystring.stringify(map))
+    const response = await axios.post(
+      '/markers/',
+      querystring.stringify(marker)
+    )
     console.log(response.data)
     return response.data
   } catch (err) {

@@ -1,10 +1,13 @@
 module.exports = function (app, db) {
   app.get('/maps/:id', (req, res) => {
     const mapId = req.params.id
-    db
-      .getMap(mapId)
-      .then(data => res.send(data[0]))
-      .catch(error => res.send(error))
+    db.getMap(mapId).then(data => res.send(data[0])).catch(error => {
+      if (error.error === 'data not found') {
+        res.send({ error: 'map not found' })
+      } else {
+        res.send(error)
+      }
+    })
   })
 
   app.delete('/maps/:id', (req, res) => {

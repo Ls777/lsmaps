@@ -1,6 +1,6 @@
 import { getMap, createMap } from '../lib/mapService'
 
-const MAP_SET = 'MAP_SET'
+export const MAP_SET = 'MAP_SET'
 
 export const setMap = map => ({ type: MAP_SET, payload: map })
 
@@ -19,11 +19,11 @@ export const fetchMap = id => {
   }
 }
 
-export const addMap = map => {
+export const newMap = map => {
   return async dispatch => {
     try {
-      const success = await createMap(map)
-      dispatch(setMap(map))
+      const response = await createMap(map)
+      dispatch(setMap({ id: response.mapId, ...map }))
     } catch (err) {
       console.log('====================================')
       console.log(err)
@@ -31,15 +31,6 @@ export const addMap = map => {
     }
   }
 }
-
-/* export const addMap = map => {
-  return dispatch => {
-    console.log('thunked')
-    createMap(map)
-      .then(map => dispatch(setMap(map)))
-      .catch(e => console.log('erro' + e))
-  }
-} */
 
 export default (state = {}, action) => {
   switch (action.type) {
