@@ -5,10 +5,20 @@ import { newMarker } from '../reducers/marker.js'
 import { Redirect } from 'react-router-dom'
 import GeoAutocomplete from './GeoAutocomplete'
 
+import {
+  Button,
+  NumericInput,
+  InputGroup,
+  FormGroup,
+  Card
+} from '@blueprintjs/core'
+
+import { CustomTextField } from './CommonForm'
+
 const initialValues = { name: '', url: '', description: '' }
 
 const NewMarkerForm = ({ newMarker, markers, mapId }) => (
-  <div>
+  <Card class='example-card'>
     <h1>New Marker</h1>
     <Formik
       initialValues={initialValues}
@@ -28,16 +38,35 @@ const NewMarkerForm = ({ newMarker, markers, mapId }) => (
       }}
       render={props => (
         <form onSubmit={props.handleSubmit}>
-          <Field type='text' name='name' placeholder='Name' required />
-          <Field type='number' name='lat' placeholder='latitude' required />
-          <Field type='number' name='lng' placeholder='longitude' required />
-          <Field type='text' name='url' placeholder='Url' />
-          <Field type='text' name='description' placeholder='Description' />
-          <button type='submit'>Submit</button>
+          <CustomTextField
+            type='text'
+            name='name'
+            placeholder='Name'
+            required
+          />
+          <CustomTextField
+            type='number'
+            name='lat'
+            placeholder='latitude'
+            required
+          />
+          <CustomTextField
+            type='number'
+            name='lng'
+            placeholder='longitude'
+            required
+          />
+          <CustomTextField type='text' name='url' placeholder='Url' />
+          <CustomTextField
+            type='text'
+            name='description'
+            placeholder='Description'
+          />
+          <Button type='submit'>Submit</Button>
         </form>
       )}
     />
-  </div>
+  </Card>
 )
 
 export default connect(

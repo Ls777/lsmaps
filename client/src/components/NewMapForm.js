@@ -3,15 +3,24 @@ import { connect } from 'react-redux'
 import { Formik, Field } from 'formik'
 import { newMap } from '../reducers/map.js'
 import { withRouter, Redirect } from 'react-router-dom'
+import {
+  Button,
+  NumericInput,
+  InputGroup,
+  FormGroup,
+  Card
+} from '@blueprintjs/core'
+
+import { CustomTextField } from './CommonForm'
 
 const initialValues = { name: '', url: '', description: '' }
 
-const NewMapForm = ({ addMap, map }) => {
+const NewMapForm = ({ newMap, map }) => {
   if (map.id) {
     return <Redirect to={`/maps/${map.id}`} />
   }
   return (
-    <div>
+    <Card className='example-card'>
       <h1>New Map</h1>
       <Formik
         initialValues={initialValues}
@@ -22,7 +31,7 @@ const NewMapForm = ({ addMap, map }) => {
               submitObj[key] = values[key]
             }
           }
-          addMap(submitObj).then(r => console.log('z'))
+          newMap(submitObj).then(r => console.log('z'))
           setTimeout(() => {
             alert(JSON.stringify(submitObj, null, 2))
             actions.setSubmitting(false)
@@ -30,14 +39,15 @@ const NewMapForm = ({ addMap, map }) => {
         }}
         render={props => (
           <form onSubmit={props.handleSubmit}>
-            <Field type='text' name='name' placeholder='Name' required />
-            <Field type='text' name='url' placeholder='Url' />
-            <Field type='text' name='description' placeholder='Description' />
-            <button type='submit'>Submit</button>
+            <CustomTextField name='name' placeholder='descript' required />
+            <CustomTextField name='url' placeholder='descript' />
+
+            <CustomTextField name='description' placeholder='descript' />
+            <Button type='submit'>Submit</Button>
           </form>
         )}
       />
-    </div>
+    </Card>
   )
 }
 
