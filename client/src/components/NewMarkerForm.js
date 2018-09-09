@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Formik, Field } from 'formik'
 import { newMarker } from '../reducers/marker.js'
 import { Redirect } from 'react-router-dom'
-import GeoAutocomplete from './GeoAutocomplete'
 
 import {
   Button,
@@ -18,7 +17,7 @@ import { CustomTextField } from './CommonForm'
 const initialValues = { name: '', url: '', description: '' }
 
 const NewMarkerForm = ({ newMarker, markers, mapId }) => (
-  <Card class='example-card'>
+  <Card className='example-card'>
     <h1>New Marker</h1>
     <Formik
       initialValues={initialValues}

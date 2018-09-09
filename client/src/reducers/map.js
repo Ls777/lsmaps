@@ -1,5 +1,7 @@
 import { getMap, createMap } from '../lib/mapService'
 
+const initState = { loading: false }
+
 export const MAP_SET = 'MAP_SET'
 
 export const setMap = map => ({ type: MAP_SET, payload: map })
@@ -7,7 +9,7 @@ export const setMap = map => ({ type: MAP_SET, payload: map })
 export const fetchMap = id => {
   return async dispatch => {
     try {
-      // todo dispatch loading state
+      // dispatch(fetchingMap())
       const map = await getMap(id)
       console.log(map)
       dispatch(setMap(map))
@@ -32,7 +34,7 @@ export const newMap = map => {
   }
 }
 
-export default (state = {}, action) => {
+export default (state = initState, action) => {
   switch (action.type) {
     case MAP_SET:
       return { ...state, ...action.payload }
