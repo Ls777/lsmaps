@@ -1,4 +1,5 @@
 import { getMarkers, createMarker } from '../lib/markerService'
+import { closeNewMarkerForm } from './ui'
 
 export const SET_MARKERS = 'SET_MARKERS'
 export const ADD_MARKER = 'ADD_MARKER'
@@ -28,6 +29,7 @@ export const newMarker = marker => {
       const response = await createMarker(marker)
       console.log(response)
       dispatch(addMarker({ id: response.markerId, ...marker }))
+      dispatch(closeNewMarkerForm())
     } catch (err) {
       console.log('====================================')
       console.log(err)

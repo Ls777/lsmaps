@@ -1,5 +1,6 @@
 import React from 'react'
 import { css } from 'emotion'
+import { connect } from 'react-redux'
 import {
   ButtonGroup,
   Button,
@@ -15,10 +16,16 @@ import {
 } from '@blueprintjs/core'
 
 import NewMarkerForm from './NewMarkerForm'
+import { openNewMarkerForm } from '../reducers/ui'
 
-const FileMenu = props => (
+const FileMenu = ({ openNewMarkerForm, ...props }) => (
   <Menu className={props.className}>
-    <MenuItem text='New Marker' icon='document' {...props} />
+    <MenuItem
+      text='New Marker'
+      icon='document'
+      {...props}
+      onClick={openNewMarkerForm}
+    />
     <MenuItem text='Open' icon='folder-shared' {...props} />
     <MenuItem text='Close' icon='add-to-folder' {...props} />
     <MenuDivider />
@@ -29,14 +36,14 @@ const FileMenu = props => (
   </Menu>
 )
 
-const MapUi = ({ inputRef }) => (
+const MapUi = ({ inputRef, ...menuProps }) => (
   <div className={container}>
     <ButtonGroup className={css`flex:none;`}>
       <Button text='File' />
 
       <Button text='Edit' />
       <Divider />
-      <Popover content={<FileMenu />} position='bottom'>
+      <Popover content={<FileMenu {...menuProps} />} position='bottom' minimal>
         <Button text='Create' />
       </Popover>
       <Button text='Delete' />
@@ -74,4 +81,6 @@ const input = css`
   position: fixed;
 ` */
 
-export default MapUi
+export default connect(null, {
+  openNewMarkerForm
+})(MapUi)

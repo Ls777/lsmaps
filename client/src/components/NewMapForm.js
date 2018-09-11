@@ -39,8 +39,8 @@ const NewMapForm = ({ newMap, map }) => {
         }}
         render={props => (
           <form onSubmit={props.handleSubmit}>
-            <CustomTextField name='name' placeholder='descript' required />
-            <CustomTextField name='url' placeholder='descript' />
+            <CustomTextField name='name' placeholder='name' required />
+            <CustomTextField name='url' placeholder='url' />
 
             <CustomTextField name='description' placeholder='descript' />
             <Button type='submit'>Submit</Button>

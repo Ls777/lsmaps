@@ -5,6 +5,7 @@ import NewMapForm from './components/NewMapForm'
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 import { css } from 'emotion'
 import { Button, NonIdealState } from '@blueprintjs/core'
+import Home from './components/Home'
 
 class App extends Component {
   render () {
@@ -12,7 +13,7 @@ class App extends Component {
       <Router>
         <div className={className}>
           <Switch>
-            <Route exact path='/' component={NewMapForm} />
+            <Route exact path='/' component={Home} />
             <Route
               path='/maps/:mapId'
               render={props => (

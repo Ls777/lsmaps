@@ -5,27 +5,23 @@ import { MyMap } from './MyMap'
 import { connect } from 'react-redux'
 import { fetchMap } from '../reducers/map'
 import { fetchMarkers } from '../reducers/marker'
+import { closeNewMarkerForm } from '../reducers/ui'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
+import MapHeader from './MapHeader'
 import { css, cx } from 'emotion'
 
-import { enableEnterKey } from '../lib/helper'
-
 import {
+  ButtonGroup,
   Button,
-  NumericInput,
-  InputGroup,
-  FormGroup,
-  Card,
   Dialog,
+  NonIdealState,
   Spinner,
-  Callout,
-  Divider,
-  H1,
-  H2,
-  NonIdealState
+  Card
 } from '@blueprintjs/core'
+
+import { enableEnterKey } from '../lib/helper'
 
 class MapContainer extends Component {
   state = {
@@ -68,15 +64,11 @@ class MapContainer extends Component {
         map.setZoom(13)
       }
 
-      this.setState({ position: place.geometry.location })
+      // this.setState({ position: place.geometry.location })
     })
   }
 
   render () {
-    /* if (this.props.mapInfo.error === 'map not found') {
-      return <h1>map doesnt exist</h1>
-    } */
-
     const { mapInfo, markers, google } = this.props
 
     const markerRender =
@@ -92,7 +84,7 @@ class MapContainer extends Component {
 
     return (
       <div className={containerStyle}>
-        <Header map={mapInfo} className={noflex} />
+        <MapHeader map={mapInfo} className={noflex} />
         <Dialog isOpen={this.props.mapInfo.error}>
           <NonIdealState
             intent='danger'
@@ -105,6 +97,13 @@ class MapContainer extends Component {
             }
             description="I'm sorry, we weren't able to find that map."
           />
+        </Dialog>
+        <Dialog
+          isOpen={this.props.ui.showNewMarkerForm}
+          title='New Marker'
+          onClose={this.props.closeNewMarkerForm}
+        >
+          <NewMarkerForm />
         </Dialog>
         <MyMap
           className='map'
@@ -135,28 +134,6 @@ class MapContainer extends Component {
   }
 }
 
-const Header = ({ map }) => (
-  <header className={cx(headerStyle, 'bp3-text-large')}>
-    <H1>LsMaps</H1>
-    <Divider />
-    <H2>{map.name}</H2>
-    <em className='bp3-text-large'>{map.description}</em>
-
-  </header>
-)
-
-const headerStyle = css`
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-  height: 60px;
-
-  em, h2 {
-    margin-left: 50px;
-  }
-  
-`
-
 const MarkerRenderOld = ({ markers }) => (
   <div>
     <h3>markers {markers.length}</h3>
@@ -182,10 +159,11 @@ const containerStyle = css`
 `
 
 const Connected = connect(
-  state => ({ mapInfo: state.map, markers: state.markers }),
+  state => ({ mapInfo: state.map, markers: state.markers, ui: state.ui }),
   {
     fetchMap,
-    fetchMarkers
+    fetchMarkers,
+    closeNewMarkerForm
   }
 )(MapContainer)
 
