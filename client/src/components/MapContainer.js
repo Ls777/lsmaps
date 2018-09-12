@@ -5,7 +5,11 @@ import { MyMap } from './MyMap'
 import { connect } from 'react-redux'
 import { fetchMap } from '../reducers/map'
 import { fetchMarkers } from '../reducers/marker'
-import { closeNewMarkerForm } from '../reducers/ui'
+import {
+  closeNewMarkerForm,
+  openInfoWindow,
+  closeInfoWindow
+} from '../reducers/ui'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
@@ -18,7 +22,9 @@ import {
   Dialog,
   NonIdealState,
   Spinner,
-  Card
+  Card,
+  H2,
+  H3
 } from '@blueprintjs/core'
 
 import { enableEnterKey } from '../lib/helper'
@@ -64,23 +70,46 @@ class MapContainer extends Component {
         map.setZoom(13)
       }
 
-      // this.setState({ position: place.geometry.location })
+      this.setState({ position: place.geometry.location })
     })
   }
 
   render () {
     const { mapInfo, markers, google } = this.props
+    const { infoWindowMarker, infoWindowMarkerId } = this.props.ui
 
     const markerRender =
       markers.length > 0 &&
       markers.map(marker => (
         <Marker
           key={marker.id}
+          id={marker.id}
           title={marker.name}
           position={{ lat: marker.lat, lng: marker.lng }}
           name={marker.name}
+          onClick={(props, markerInstance) =>
+            this.props.openInfoWindow(markerInstance, marker.id)}
         />
       ))
+
+    let activeMarker = {}
+
+    if (infoWindowMarker !== null) {
+      activeMarker = this.props.markers.filter(
+        marker => marker.id === infoWindowMarkerId
+      )[0]
+    }
+
+    const infoWindow = (
+      <InfoWindow
+        visible={infoWindowMarker !== null}
+        marker={infoWindowMarker}
+        onClose={this.props.closeInfoWindow}
+      >
+        {infoWindowMarker !== null && <H2>{activeMarker.name}</H2>}
+
+      </InfoWindow>
+    )
 
     return (
       <div className={containerStyle}>
@@ -127,6 +156,7 @@ class MapContainer extends Component {
           }}
         >
           {markerRender}
+          {infoWindow}
           <MapUi inputRef={ref => (this.autocomplete = ref)} />
         </MyMap>
       </div>
@@ -163,7 +193,9 @@ const Connected = connect(
   {
     fetchMap,
     fetchMarkers,
-    closeNewMarkerForm
+    closeNewMarkerForm,
+    openInfoWindow,
+    closeInfoWindow
   }
 )(MapContainer)
 
