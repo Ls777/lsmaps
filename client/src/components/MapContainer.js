@@ -14,6 +14,7 @@ import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
 import MapHeader from './MapHeader'
+import MarkerInfo from './MarkerInfo'
 import { css, cx } from 'emotion'
 
 import {
@@ -34,7 +35,7 @@ class MapContainer extends Component {
     position: null
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchMap(this.props.fetchId)
     this.props.fetchMarkers(this.props.fetchId)
   }
@@ -74,7 +75,7 @@ class MapContainer extends Component {
     })
   }
 
-  render () {
+  render() {
     const { mapInfo, markers, google } = this.props
     const { infoWindowMarker, infoWindowMarkerId } = this.props.ui
 
@@ -92,24 +93,7 @@ class MapContainer extends Component {
         />
       ))
 
-    let activeMarker = {}
 
-    if (infoWindowMarker !== null) {
-      activeMarker = this.props.markers.filter(
-        marker => marker.id === infoWindowMarkerId
-      )[0]
-    }
-
-    const infoWindow = (
-      <InfoWindow
-        visible={infoWindowMarker !== null}
-        marker={infoWindowMarker}
-        onClose={this.props.closeInfoWindow}
-      >
-        {infoWindowMarker !== null && <H2>{activeMarker.name}</H2>}
-
-      </InfoWindow>
-    )
 
     return (
       <div className={containerStyle}>
@@ -156,7 +140,7 @@ class MapContainer extends Component {
           }}
         >
           {markerRender}
-          {infoWindow}
+          <MarkerInfo {...this.props} />
           <MapUi inputRef={ref => (this.autocomplete = ref)} />
         </MyMap>
       </div>
