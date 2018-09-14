@@ -4,7 +4,6 @@ const querystring = require('querystring')
 export const getMap = async id => {
   try {
     const response = await axios.get(`/maps/${id}`)
-    console.log(response.data)
     return response.data
   } catch (err) {
     console.log('====================================')
@@ -17,7 +16,6 @@ export const getMap = async id => {
 export const createMap = async map => {
   try {
     const response = await axios.post('/maps/', querystring.stringify(map))
-    console.log(response.data)
     return response.data
   } catch (err) {
     console.log('failed')

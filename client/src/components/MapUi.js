@@ -16,7 +16,8 @@ import {
 } from '@blueprintjs/core'
 
 import NewMarkerForm from './NewMarkerForm'
-import { openNewMarkerForm } from '../reducers/ui'
+import { openNewMarkerForm, exitSelectLocationMode } from '../reducers/ui'
+import AutoComplete from './AutoComplete'
 
 const FileMenu = ({ openNewMarkerForm, ...props }) => (
   <Menu className={props.className}>
@@ -36,7 +37,12 @@ const FileMenu = ({ openNewMarkerForm, ...props }) => (
   </Menu>
 )
 
-const MapUi = ({ inputRef, ...menuProps }) => (
+const MapUi = ({
+  inputRef,
+  exitSelectLocationMode,
+  mapCenter,
+  ...menuProps
+}) => (
   <div className={container}>
     <ButtonGroup className={css`flex:none;`}>
       <Button text='File' />
@@ -48,14 +54,19 @@ const MapUi = ({ inputRef, ...menuProps }) => (
       </Popover>
       <Button text='Delete' />
       <Divider />
-      <Button icon='add' />
+      <Button icon='add' onClick={exitSelectLocationMode} />
       <Button icon='remove' />
     </ButtonGroup>
-    <InputGroup
+    {/* <InputGroup
       className={input}
       type='search'
       inputRef={inputRef}
       leftIcon='geolocation'
+    /> */}
+    <AutoComplete
+      className={input}
+      map={menuProps.map}
+      google={menuProps.google}
     />
   </div>
 )
@@ -82,5 +93,6 @@ const input = css`
 ` */
 
 export default connect(null, {
-  openNewMarkerForm
+  openNewMarkerForm,
+  exitSelectLocationMode
 })(MapUi)

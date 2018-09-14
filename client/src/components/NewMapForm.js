@@ -31,18 +31,37 @@ const NewMapForm = ({ newMap, map }) => {
               submitObj[key] = values[key]
             }
           }
-          newMap(submitObj).then(r => console.log('z'))
+          // newMap(submitObj).then(r => console.log('z'))
           setTimeout(() => {
             alert(JSON.stringify(submitObj, null, 2))
             actions.setSubmitting(false)
-          }, 1000)
+          }, 100)
         }}
-        render={props => (
-          <form onSubmit={props.handleSubmit}>
-            <CustomTextField name='name' placeholder='name' required />
-            <CustomTextField name='url' placeholder='url' />
-
-            <CustomTextField name='description' placeholder='descript' />
+        render={({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting
+          /* and other goodies */
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <FormGroup
+              helperText='Helper text with details...'
+              label='Label A'
+              labelFor='text-input'
+              labelInfo='(required)'
+            >
+              <InputGroup
+                name='name'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.name}
+                placeHolder='Name'
+              />
+            </FormGroup>
             <Button type='submit'>Submit</Button>
           </form>
         )}

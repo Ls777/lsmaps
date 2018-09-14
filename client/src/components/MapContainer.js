@@ -8,7 +8,9 @@ import { fetchMarkers } from '../reducers/marker'
 import {
   closeNewMarkerForm,
   openInfoWindow,
-  closeInfoWindow
+  closeInfoWindow,
+  setFormMapPosition,
+  exitSelectLocationMode
 } from '../reducers/ui'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
@@ -25,59 +27,31 @@ import {
   Spinner,
   Card,
   H2,
-  H3
+  H5
 } from '@blueprintjs/core'
-
-import { enableEnterKey } from '../lib/helper'
 
 class MapContainer extends Component {
   state = {
     position: null
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.fetchMap(this.props.fetchId)
     this.props.fetchMarkers(this.props.fetchId)
   }
 
-  renderAutoComplete = (mapProps, map) => {
-    const { google } = mapProps
-
-    if (!google || !map) {
-      console.log('no google or map')
-      console.log(google)
-      console.log(map)
-      return
+  onMapClick = (mapProps, map, clickEvent) => {
+    if (this.props.ui.selectLocationMode) {
+      this.props.setFormMapPosition({
+        lat: clickEvent.latLng.lat(),
+        lng: clickEvent.latLng.lng()
+      })
+      this.props.exitSelectLocationMode()
     }
-
-    console.log(google)
-    console.log(map)
-    console.log('yes google yes map')
-
-    const autocomplete = new google.maps.places.Autocomplete(this.autocomplete)
-    enableEnterKey(this.autocomplete)
-
-    // autocomplete.bindTo(map, 'bounds')
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace()
-
-      if (!place.geometry) return
-      else {
-        if (place.geometry.viewport) {
-          map.fitBounds(place.geometry.viewport)
-        }
-        map.setCenter(place.geometry.location)
-        map.setZoom(13)
-      }
-
-      this.setState({ position: place.geometry.location })
-    })
   }
 
-  render() {
+  render () {
     const { mapInfo, markers, google } = this.props
-    const { infoWindowMarker, infoWindowMarkerId } = this.props.ui
 
     const markerRender =
       markers.length > 0 &&
@@ -92,8 +66,6 @@ class MapContainer extends Component {
             this.props.openInfoWindow(markerInstance, marker.id)}
         />
       ))
-
-
 
     return (
       <div className={containerStyle}>
@@ -111,16 +83,9 @@ class MapContainer extends Component {
             description="I'm sorry, we weren't able to find that map."
           />
         </Dialog>
-        <Dialog
-          isOpen={this.props.ui.showNewMarkerForm}
-          title='New Marker'
-          onClose={this.props.closeNewMarkerForm}
-        >
-          <NewMarkerForm />
-        </Dialog>
+
         <MyMap
           className='map'
-          onReady={this.renderAutoComplete}
           center={this.state.position}
           google={google}
           zoom={14}
@@ -131,7 +96,7 @@ class MapContainer extends Component {
             position: google.maps.ControlPosition.TOP_RIGHT
           }}
           streetViewControl={false}
-          onClick={this.onMapClicked}
+          onClick={this.onMapClick}
           containerStyle={{
             width: '100%',
             height: 'auto',
@@ -141,7 +106,8 @@ class MapContainer extends Component {
         >
           {markerRender}
           <MarkerInfo {...this.props} />
-          <MapUi inputRef={ref => (this.autocomplete = ref)} />
+          <MapUi />
+          <NewMarkerForm />
         </MyMap>
       </div>
     )
@@ -179,7 +145,9 @@ const Connected = connect(
     fetchMarkers,
     closeNewMarkerForm,
     openInfoWindow,
-    closeInfoWindow
+    closeInfoWindow,
+    setFormMapPosition,
+    exitSelectLocationMode
   }
 )(MapContainer)
 

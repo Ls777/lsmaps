@@ -11,7 +11,6 @@ export const fetchMap = id => {
     try {
       // dispatch(fetchingMap())
       const map = await getMap(id)
-      console.log(map)
       dispatch(setMap(map))
     } catch (err) {
       console.log('====================================')

@@ -4,7 +4,6 @@ const querystring = require('querystring')
 export const getMarkers = async id => {
   try {
     const response = await axios.get(`/markers/bymap/${id}`)
-    console.log(response.data)
     return response.data
   } catch (err) {
     console.log('====================================')

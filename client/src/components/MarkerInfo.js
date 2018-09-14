@@ -3,25 +3,19 @@ import { InfoWindow } from 'google-maps-react'
 import { H1, H2, H3, Popover, Button } from '@blueprintjs/core'
 import { css, injectGlobal } from 'emotion'
 
-
-
-
-
-
-const MarkerInfo = (props) => {
+const MarkerInfo = props => {
   const { infoWindowMarker, infoWindowMarkerId } = props.ui
 
   let marker = {}
 
   if (infoWindowMarker !== null) {
-    marker = props.markers.filter(
-      el => el.id === infoWindowMarkerId
-    )[0]
+    marker = props.markers.filter(el => el.id === infoWindowMarkerId)[0]
   }
 
   return (
-    <InfoWindow {...props}
-      className="infowindow"
+    <InfoWindow
+      {...props}
+      className='infowindow'
       visible={infoWindowMarker !== null}
       marker={infoWindowMarker}
       onClose={props.closeInfoWindow}
@@ -30,12 +24,20 @@ const MarkerInfo = (props) => {
         {infoWindowMarker &&
           <div className={className}>
             <H3>{marker.name}</H3>
-            {marker.url && <a className="bp3-text-large" href={marker.url} target="_blank">Link</a>}
+            {marker.url &&
+              <a
+                className='bp3-text-large'
+                href={`//${marker.url}`}
+                target='_blank'
+              >
+                Link
+              </a>}
             {marker.description && <p>{marker.description}</p>}
           </div>}
       </Fragment>
 
-    </InfoWindow>)
+    </InfoWindow>
+  )
 }
 
 const className = css`

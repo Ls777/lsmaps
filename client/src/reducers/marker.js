@@ -11,8 +11,6 @@ export const fetchMarkers = id => {
   return async dispatch => {
     try {
       const markers = await getMarkers(id)
-      console.log('marker dispatch' + markers)
-      console.log(markers)
       dispatch(setMarkers(markers))
     } catch (err) {
       console.log('====================================')
