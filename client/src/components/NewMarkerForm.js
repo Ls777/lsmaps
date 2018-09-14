@@ -6,9 +6,10 @@ import { Redirect } from 'react-router-dom'
 import {
   enterSelectLocationMode,
   exitSelectLocationMode,
-  closeNewMarkerForm,
-  setFormMapPosition
+  closeNewMarkerForm
 } from '../reducers/ui.js'
+
+import { setFormMapPosition } from '../reducers/formmapposition'
 
 import {
   Button,
@@ -22,7 +23,8 @@ import {
   H5,
   IPanelProps,
   PanelStack,
-  IPanel
+  IPanel,
+  TextArea
 } from '@blueprintjs/core'
 
 import AutoComplete from './AutoComplete.js'
@@ -33,26 +35,12 @@ import { css } from 'emotion'
 const initialValues = {
   name: '',
   url: '',
-  description: '',
-  tester: ''
+  description: ''
 }
 
 class NewMarkerForm extends Component {
   render () {
-    const {
-      newMarker,
-      markers,
-      mapId,
-      enterSelectLocationMode,
-      exitSelectLocationMode,
-      closeNewMarkerForm,
-      setFormMapPosition,
-      ui,
-      map,
-      google
-    } = this.props
-
-    const props = this.props
+    const { mapId, closeNewMarkerForm, ui, map, google } = this.props
 
     const onSubmit = (values, actions) => {
       const submitObj = {}
@@ -62,7 +50,6 @@ class NewMarkerForm extends Component {
         }
       }
       submitObj.mapId = mapId
-      // newMarker(submitObj).then(r => console.log('goo'))
 
       setTimeout(() => {
         alert(JSON.stringify(values, null, 2))
@@ -75,7 +62,7 @@ class NewMarkerForm extends Component {
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
-        render={formikProps => {
+        render={formik => {
           if (ui.selectLocationMode) {
             return null
           }
@@ -83,6 +70,7 @@ class NewMarkerForm extends Component {
             <Dialog
               isOpen={ui.showNewMarkerForm}
               title='New Marker'
+              backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
               onClose={closeNewMarkerForm}
               canEscapeKeyClose={false}
             >
@@ -91,7 +79,47 @@ class NewMarkerForm extends Component {
                 initialPanel={{
                   component: LocationPanel,
                   title: 'Location',
-                  props: { ...formikProps, ...props }
+                  props: {
+                    ...formik,
+                    google: google,
+                    map: map,
+                    render: () => (
+                      <div>
+                        <form
+                          onSubmit={formik.handleSubmit}
+                          className={className}
+                        >
+                          <H2>Details</H2>
+                          <input
+                            name='name'
+                            type='text'
+                            placeholder='Name of Marker'
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          <InputGroup
+                            name='url'
+                            placeholder='Website'
+                            value={formik.values.url}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          <TextArea
+                            name='description'
+                            placeholder='Website'
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+
+                          <Button type='submit' intent='primary'>
+                            Submit
+                          </Button>
+                        </form>
+                      </div>
+                    )
+                  }
                 }}
               />
             </Dialog>
@@ -108,33 +136,17 @@ const panelClass = css`
   padding: 10px;
 `
 
-class DetailsPanel extends React.Component {
-  render () {
-    return (
-      <div>
-        <H2>Test 2</H2>
-        <form onSubmit={this.props.handleSubmit} className={className}>
-          <InputGroup />
-          <Button type='submit' intent='primary'>
-            Submit
-          </Button>
-        </form>
-      </div>
-    )
-  }
-}
-
 const className = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   margin-top: 50px;
+  padding: 40px;
 `
 
 export default connect(
   state => ({
-    markers: state.markers,
     mapId: state.map.id,
     ui: state.ui
   }),

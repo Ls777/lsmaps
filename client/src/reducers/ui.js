@@ -3,8 +3,7 @@ const initState = {
   showNewMarkerForm: false,
   selectLocationMode: false,
   infoWindowMarker: null,
-  infoWindowMarkerId: null,
-  formMapPosition: { lat: '', lng: '' }
+  infoWindowMarkerId: null
 }
 
 const OPEN_NEW_MAP_FORM = 'OPEN_NEW_MAP_FORM'
@@ -15,7 +14,6 @@ const ENTER_SELECT_LOCATION_MODE = 'ENTER_SELECT_LOCATION_MODE'
 const EXIT_SELECT_LOCATION_MODE = 'EXIT_SELECT_LOCATION_MODE'
 const OPEN_INFO_WINDOW = 'OPEN_INFO_WINDOW'
 const CLOSE_INFO_WINDOW = 'CLOSE_INFO_WINDOW'
-const SET_FORM_MAP_POSITION = 'SET_FORM_MAP_POSITION'
 
 export const openNewMapForm = () => ({ type: OPEN_NEW_MAP_FORM })
 export const closeNewMapForm = () => ({ type: CLOSE_NEW_MAP_FORM })
@@ -31,11 +29,6 @@ export const enterSelectLocationMode = () => ({
 })
 export const exitSelectLocationMode = () => ({
   type: EXIT_SELECT_LOCATION_MODE
-})
-
-export const setFormMapPosition = position => ({
-  type: SET_FORM_MAP_POSITION,
-  payload: position
 })
 
 export default (state = initState, action) => {
@@ -60,8 +53,6 @@ export default (state = initState, action) => {
       return { ...state, selectLocationMode: true }
     case EXIT_SELECT_LOCATION_MODE:
       return { ...state, selectLocationMode: false }
-    case SET_FORM_MAP_POSITION:
-      return { ...state, formMapPosition: action.payload }
     default:
       return state
   }

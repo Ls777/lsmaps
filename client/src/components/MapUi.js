@@ -92,7 +92,7 @@ const input = css`
   position: fixed;
 ` */
 
-export default connect(null, {
+export default connect(state => ({ ui: state.ui }), {
   openNewMarkerForm,
   exitSelectLocationMode
 })(MapUi)

@@ -59,6 +59,7 @@ export class MyMap extends Map {
           fullscreenControl: this.props.fullscreenControl,
           scrollwheel: this.props.scrollwheel,
           draggable: this.props.draggable,
+          draggableCursor: this.props.draggableCursor,
           keyboardShortcuts: this.props.keyboardShortcuts,
           disableDoubleClickZoom: this.props.disableDoubleClickZoom,
           noClear: this.props.noClear,

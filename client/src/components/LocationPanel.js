@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
 import {
   FormGroup,
   ControlGroup,
@@ -10,22 +11,21 @@ import {
 import { css } from 'emotion'
 
 import AutoComplete from './AutoComplete'
+import MapContextMenu from './MapContextMenu'
+
+import { enterSelectLocationMode } from '../reducers/ui'
+import { setFormMapPosition } from '../reducers/formmapposition'
 
 class LocationPanel extends Component {
   handlePositionChange = e => {
-    console.log('whats goin on')
+    if (e.keyCode === 69) return
+
+    console.log(e)
+
     const newPosition = {}
-    newPosition[e.target.name] = e.target.value
-    console.log(e.target.name)
-    console.log(e.target.value)
-    console.log(newPosition)
-    console.log(this.props.ui.formMapPosition)
-    console.log({
-      ...this.props.ui.formMapPosition,
-      ...newPosition
-    })
+    newPosition[e.target.name] = Number(e.target.value)
     this.props.setFormMapPosition({
-      ...this.props.ui.formMapPosition,
+      ...this.props.form.formMapPosition,
       ...newPosition
     })
   }
@@ -33,22 +33,14 @@ class LocationPanel extends Component {
   openDetailsPanel () {
     // openPanel (and closePanel) are injected by PanelStack
     this.props.openPanel({
-      component: DetailsPanel, // <- class or stateless function type
-      props: { enabled: true }, // <- SettingsPanel props without IPanelProps
+      component: DetailsPanel, // <- class or stateless function type// <- SettingsPanel props without IPanelProps
       title: 'Settings' // <- appears in header and back button
     })
   }
 
   render () {
-    const {
-      ui,
-      map,
-      google,
-      handleBlur,
-      handleSubmit,
-      enterSelectLocationMode
-    } = this.props
-    console.log(ui)
+    const { form, map, google, enterSelectLocationMode } = this.props
+    console.log(form.formMapPosition)
     return (
       <Fragment>
         <div className={className}>
@@ -71,30 +63,32 @@ class LocationPanel extends Component {
             <ControlGroup fill id='position'>
               <InputGroup
                 name='lat'
+                type='number'
                 onChange={this.handlePositionChange}
-                value={ui.formMapPosition.lat}
+                value={form.formMapPosition.lat}
                 placeholder='Latitude'
               />
               <InputGroup
                 name='lng'
+                type='number'
                 onChange={this.handlePositionChange}
-                value={ui.formMapPosition.lng}
+                value={form.formMapPosition.lng}
                 placeholder='Longitude'
               />
             </ControlGroup>
           </FormGroup>
           <Button
+            className={css`align-self: flex-end;`}
             onClick={() =>
               this.props.openPanel({
                 component: DetailsPanel,
                 title: 'Details',
-                props: this.props
+                props: { ...this.props }
               })}
             text='Next'
             rightIcon='arrow-right'
           />
         </div>
-
       </Fragment>
     )
   }
@@ -102,17 +96,7 @@ class LocationPanel extends Component {
 
 class DetailsPanel extends React.Component {
   render () {
-    return (
-      <div>
-        <H2>Test 2</H2>
-        <form onSubmit={this.props.handleSubmit} className={className}>
-          <InputGroup />
-          <Button type='submit' intent='primary'>
-            Submit
-          </Button>
-        </form>
-      </div>
-    )
+    return this.props.render()
   }
 }
 
@@ -121,7 +105,16 @@ const className = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  padding: 40px 5vw 20px;
+  h5 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
 `
 
-export default LocationPanel
+export default connect(
+  state => ({
+    form: state.formMapPosition
+  }),
+  { enterSelectLocationMode, setFormMapPosition }
+)(LocationPanel)

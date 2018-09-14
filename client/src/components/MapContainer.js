@@ -9,14 +9,15 @@ import {
   closeNewMarkerForm,
   openInfoWindow,
   closeInfoWindow,
-  setFormMapPosition,
   exitSelectLocationMode
 } from '../reducers/ui'
+import { setFormMapPosition } from '../reducers/formmapposition'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
 import MapHeader from './MapHeader'
 import MarkerInfo from './MarkerInfo'
+import MapContextMenu from './MapContextMenu'
 import { css, cx } from 'emotion'
 
 import {
@@ -27,17 +28,43 @@ import {
   Spinner,
   Card,
   H2,
-  H5
+  H5,
+  ContextMenu,
+  Menu,
+  MenuItem,
+  MenuDivider,
+  Icon,
+  Overlay
 } from '@blueprintjs/core'
 
 class MapContainer extends Component {
   state = {
-    position: null
+    position: null,
+    contextMenuPosition: null
   }
 
   componentDidMount () {
     this.props.fetchMap(this.props.fetchId)
     this.props.fetchMarkers(this.props.fetchId)
+  }
+
+  componentDidUpdate (prevProps) {
+    const { selectLocationMode } = this.props.ui
+    if (prevProps.ui.selectLocationMode !== selectLocationMode) {
+      this.state.map.setOptions({
+        draggableCursor: selectLocationMode ? 'crosshair' : 'grab',
+        draggingCursor: 'grab'
+      })
+    }
+
+    if (prevProps.form !== this.props.form) {
+      console.log(this.props.form.formMapPosition)
+      this.state.map.setCenter({
+        lat: parseFloat(this.props.form.formMapPosition.lat),
+        lng: parseFloat(this.props.form.formMapPosition.lng)
+      })
+      this.state.map.setZoom(13)
+    }
   }
 
   onMapClick = (mapProps, map, clickEvent) => {
@@ -47,7 +74,26 @@ class MapContainer extends Component {
         lng: clickEvent.latLng.lng()
       })
       this.props.exitSelectLocationMode()
+    } else {
+      console.log(clickEvent)
     }
+  }
+
+  onMapReady = (mapProps, map) => {
+    const { google } = mapProps
+    this.setState({ map: map })
+    google.maps.event.addListener(map, 'rightclick', event => {
+      setTimeout(
+        function () {
+          if (!this.props.ui.selectLocationMode) {
+            this.setState({
+              contextMenuPosition: { x: event.va.clientX, y: event.va.clientY }
+            })
+          }
+        }.bind(this),
+        0
+      )
+    })
   }
 
   render () {
@@ -87,6 +133,7 @@ class MapContainer extends Component {
         <MyMap
           className='map'
           center={this.state.position}
+          onReady={this.onMapReady}
           google={google}
           zoom={14}
           gestureHandling='greedy'
@@ -104,9 +151,18 @@ class MapContainer extends Component {
             position: 'relative'
           }}
         >
+
           {markerRender}
           <MarkerInfo {...this.props} />
           <MapUi />
+          <MapContextMenu
+            isOpen={
+              this.state.contextMenuPosition !== null &&
+                !this.props.ui.selectLocationMode
+            }
+            {...this.state.contextMenuPosition}
+            onClose={() => this.setState({ contextMenuPosition: null })}
+          />
           <NewMarkerForm />
         </MyMap>
       </div>
@@ -139,7 +195,12 @@ const containerStyle = css`
 `
 
 const Connected = connect(
-  state => ({ mapInfo: state.map, markers: state.markers, ui: state.ui }),
+  state => ({
+    mapInfo: state.map,
+    markers: state.markers,
+    ui: state.ui,
+    form: state.formMapPosition
+  }),
   {
     fetchMap,
     fetchMarkers,

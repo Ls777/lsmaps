@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { setFormMapPosition } from '../reducers/ui'
+import { setFormMapPosition } from '../reducers/formmapposition'
 import { InputGroup } from '@blueprintjs/core'
 
 class AutoComplete extends Component {
@@ -10,9 +10,8 @@ class AutoComplete extends Component {
 
   componentDidUpdate (prevProps) {
     if (prevProps.map !== this.props.map) {
-      this.renderAutoComplete()
+      this.renderAutoComplete() // render on map ready
     }
-    console.log('UPDATE')
   }
 
   renderAutoComplete = () => {
@@ -29,19 +28,17 @@ class AutoComplete extends Component {
     const autocomplete = new google.maps.places.Autocomplete(this.autocomplete)
     enableEnterKey(this.autocomplete)
 
-    // autocomplete.bindTo(map, 'bounds')
-
     autocomplete.addListener('place_changed', () => {
       const place = autocomplete.getPlace()
 
       if (!place.geometry) return
-      else {
+      /* else {
         if (place.geometry.viewport) {
           map.fitBounds(place.geometry.viewport)
         }
         map.setCenter(place.geometry.location)
         map.setZoom(13)
-      }
+      } */
       this.props.setFormMapPosition({
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng()
@@ -80,7 +77,7 @@ function enableEnterKey (input) {
           e.which = 40
           e.keyCode = 40
           _listener.apply(input, [e])
-          event.preventDefault()
+          // event.preventDefault()
         }
         _listener.apply(input, [event])
       }
