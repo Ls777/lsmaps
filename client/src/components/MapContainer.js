@@ -40,7 +40,8 @@ import {
 class MapContainer extends Component {
   state = {
     position: null,
-    contextMenuPosition: null
+    contextMenuPosition: null,
+    map: null
   }
 
   componentDidMount () {
@@ -86,8 +87,14 @@ class MapContainer extends Component {
       setTimeout(
         function () {
           if (!this.props.ui.selectLocationMode) {
+            console.log(event)
             this.setState({
-              contextMenuPosition: { x: event.va.clientX, y: event.va.clientY }
+              contextMenuPosition: {
+                x: event.va.clientX,
+                y: event.va.clientY,
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng()
+              }
             })
           }
         }.bind(this),

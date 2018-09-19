@@ -11,6 +11,8 @@ import {
 
 import { setFormMapPosition } from '../reducers/formmapposition'
 
+import * as Yup from 'yup'
+
 import {
   Button,
   NumericInput,
@@ -29,6 +31,7 @@ import {
 
 import AutoComplete from './AutoComplete.js'
 import LocationPanel from './LocationPanel'
+import { CustomTextField, CustomTextArea } from './CommonForm'
 
 import { css } from 'emotion'
 
@@ -38,9 +41,26 @@ const initialValues = {
   description: ''
 }
 
+const markerSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  url: Yup.string().url(),
+  description: Yup.string()
+})
+
 class NewMarkerForm extends Component {
   render () {
-    const { mapId, closeNewMarkerForm, ui, map, google } = this.props
+    const {
+      mapId,
+      closeNewMarkerForm,
+      ui,
+      map,
+      google,
+      formMapPosition,
+      newMarker
+    } = this.props
 
     const onSubmit = (values, actions) => {
       const submitObj = {}
@@ -50,24 +70,35 @@ class NewMarkerForm extends Component {
         }
       }
       submitObj.mapId = mapId
+      submitObj.lat = formMapPosition.formMapPosition.lat
+      submitObj.lng = formMapPosition.formMapPosition.lng
+
+      newMarker(submitObj).then(r => console.log('z'))
 
       setTimeout(() => {
-        alert(JSON.stringify(values, null, 2))
+        alert(JSON.stringify(submitObj, null, 2))
         actions.setSubmitting(false)
         actions.resetForm()
       }, 200)
+    }
+
+    const onCancel = formik => {
+      formik.handleReset()
+      closeNewMarkerForm()
     }
 
     return (
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
+        validationSchema={markerSchema}
         render={formik => {
           if (ui.selectLocationMode) {
             return null
           }
           return (
             <Dialog
+              className={css`padding-bottom: 5px;`}
               isOpen={ui.showNewMarkerForm}
               title='New Marker'
               backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
@@ -80,45 +111,63 @@ class NewMarkerForm extends Component {
                   component: LocationPanel,
                   title: 'Location',
                   props: {
-                    ...formik,
+                    formik: formik,
                     google: google,
                     map: map,
-                    render: () => (
-                      <div>
-                        <form
-                          onSubmit={formik.handleSubmit}
-                          className={className}
-                        >
-                          <H2>Details</H2>
-                          <input
-                            name='name'
-                            type='text'
-                            placeholder='Name of Marker'
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          />
-                          <InputGroup
-                            name='url'
-                            placeholder='Website'
-                            value={formik.values.url}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          />
-                          <TextArea
-                            name='description'
-                            placeholder='Website'
-                            value={formik.values.description}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          />
-
-                          <Button type='submit' intent='primary'>
-                            Submit
-                          </Button>
-                        </form>
-                      </div>
-                    )
+                    render: () => {
+                      console.log(formik)
+                      return (
+                        <div>
+                          <form
+                            onSubmit={formik.handleSubmit}
+                            className={className}
+                          >
+                            <CustomTextField
+                              name='name'
+                              label='Name'
+                              placeholder='Name'
+                              fill
+                              required
+                            />
+                            {formik.errors.name && formik.touched.name
+                              ? <div>{formik.errors.firstName}</div>
+                              : null}
+                            <CustomTextField
+                              name='url'
+                              label='Website'
+                              placeholder='Url'
+                              fill
+                            />
+                            <CustomTextArea
+                              name='description'
+                              label='Description'
+                              placeholder='Description'
+                              fill
+                            />
+                            <div className={buttonBox}>
+                              <Button
+                                intent='danger'
+                                icon='small-cross'
+                                minimal
+                                onClick={() => {
+                                  formik.handleReset()
+                                  closeNewMarkerForm()
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type='submit'
+                                intent='primary'
+                                rightIcon='dot'
+                              >
+                                Create Marker
+                              </Button>
+                            </div>
+                          </form>
+                        </div>
+                      )
+                    }
                   }
                 }}
               />
@@ -130,25 +179,32 @@ class NewMarkerForm extends Component {
   }
 }
 
+const buttonBox = css`
+  display: flex;
+  justify-content: flex-end;
+`
+
 const panelClass = css`
   height: 360px;
   margin-top: 1px;
-  padding: 10px;
+  padding: 0px;
 `
 
 const className = css`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
-  margin-top: 50px;
-  padding: 40px;
+  margin: auto;
+  padding: 20px;
+  width: 400px;
 `
 
 export default connect(
   state => ({
     mapId: state.map.id,
-    ui: state.ui
+    ui: state.ui,
+    formMapPosition: state.formMapPosition
   }),
   {
     newMarker,

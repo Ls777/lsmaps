@@ -11,6 +11,8 @@ import {
   Card
 } from '@blueprintjs/core'
 
+import * as Yup from 'yup'
+
 import { CustomTextField } from './CommonForm'
 
 const initialValues = { name: '', url: '', description: '' }

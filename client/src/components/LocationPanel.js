@@ -13,7 +13,7 @@ import { css } from 'emotion'
 import AutoComplete from './AutoComplete'
 import MapContextMenu from './MapContextMenu'
 
-import { enterSelectLocationMode } from '../reducers/ui'
+import { enterSelectLocationMode, closeNewMarkerForm } from '../reducers/ui'
 import { setFormMapPosition } from '../reducers/formmapposition'
 
 class LocationPanel extends Component {
@@ -31,10 +31,10 @@ class LocationPanel extends Component {
   }
 
   openDetailsPanel () {
-    // openPanel (and closePanel) are injected by PanelStack
     this.props.openPanel({
-      component: DetailsPanel, // <- class or stateless function type// <- SettingsPanel props without IPanelProps
-      title: 'Settings' // <- appears in header and back button
+      component: DetailsPanel,
+      title: 'Settings',
+      props: { ...this.props }
     })
   }
 
@@ -77,17 +77,30 @@ class LocationPanel extends Component {
               />
             </ControlGroup>
           </FormGroup>
-          <Button
-            className={css`align-self: flex-end;`}
-            onClick={() =>
-              this.props.openPanel({
-                component: DetailsPanel,
-                title: 'Details',
-                props: { ...this.props }
-              })}
-            text='Next'
-            rightIcon='arrow-right'
-          />
+          <div className={buttonBox}>
+            <Button
+              intent='danger'
+              icon='small-cross'
+              minimal
+              onClick={() => {
+                this.props.formik.handleReset()
+                this.props.closeNewMarkerForm()
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className={css`align-self: flex-end;`}
+              onClick={() =>
+                this.props.openPanel({
+                  component: DetailsPanel,
+                  title: 'Details',
+                  props: { ...this.props }
+                })}
+              text='Next'
+              rightIcon='arrow-right'
+            />
+          </div>
         </div>
       </Fragment>
     )
@@ -96,25 +109,31 @@ class LocationPanel extends Component {
 
 class DetailsPanel extends React.Component {
   render () {
-    return this.props.render()
+    return this.props.render(this.props.formik)
   }
 }
 
 const className = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
+  margin: auto;
+  width: 400px;
   padding: 40px 5vw 20px;
   h5 {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 15px auto 15px;
   }
+`
+
+const buttonBox = css`
+  display: flex;
+  justify-content: flex-end;
 `
 
 export default connect(
   state => ({
     form: state.formMapPosition
   }),
-  { enterSelectLocationMode, setFormMapPosition }
+  { enterSelectLocationMode, setFormMapPosition, closeNewMarkerForm }
 )(LocationPanel)

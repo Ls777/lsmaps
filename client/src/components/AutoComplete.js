@@ -51,7 +51,7 @@ class AutoComplete extends Component {
       <InputGroup
         className={this.props.className}
         type='search'
-        leftIcon='geolocation'
+        leftIcon='geosearch'
         inputRef={ref => (this.autocomplete = ref)}
       />
     )

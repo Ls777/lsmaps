@@ -1,6 +1,7 @@
 import React from 'react'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
+import * as Yup from 'yup'
 import {
   ButtonGroup,
   Button,
@@ -27,8 +28,7 @@ const FileMenu = ({ openNewMarkerForm, ...props }) => (
       {...props}
       onClick={openNewMarkerForm}
     />
-    <MenuItem text='Open' icon='folder-shared' {...props} />
-    <MenuItem text='Close' icon='add-to-folder' {...props} />
+    <MenuItem text='From spreadsheet' icon='folder-shared' {...props} />
     <MenuDivider />
     <MenuItem text='Save' icon='floppy-disk' {...props} />
     <MenuItem text='Save as...' icon='floppy-disk' {...props} />
