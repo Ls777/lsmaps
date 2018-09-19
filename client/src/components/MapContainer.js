@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react'
+import React, { Component } from 'react'
+import { Marker, GoogleApiWrapper } from 'google-maps-react'
 import { Link } from 'react-router-dom'
 import { MyMap } from './MyMap'
 import { connect } from 'react-redux'
@@ -11,35 +11,20 @@ import {
   closeInfoWindow,
   exitSelectLocationMode
 } from '../reducers/ui'
-import { setFormMapPosition } from '../reducers/formmapposition'
+import { setMapPosition } from '../reducers/mapposition'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
 import MapHeader from './MapHeader'
 import MarkerInfo from './MarkerInfo'
 import MapContextMenu from './MapContextMenu'
+import MapNotFound from './MapNotFound'
 import { css, cx } from 'emotion'
 
-import {
-  ButtonGroup,
-  Button,
-  Dialog,
-  NonIdealState,
-  Spinner,
-  Card,
-  H2,
-  H5,
-  ContextMenu,
-  Menu,
-  MenuItem,
-  MenuDivider,
-  Icon,
-  Overlay
-} from '@blueprintjs/core'
+import { Button, Dialog, NonIdealState, Spinner } from '@blueprintjs/core'
 
 class MapContainer extends Component {
   state = {
-    position: null,
     contextMenuPosition: null,
     map: null
   }
@@ -58,11 +43,11 @@ class MapContainer extends Component {
       })
     }
 
-    if (prevProps.form !== this.props.form) {
-      console.log(this.props.form.formMapPosition)
+    if (prevProps.mapPosition !== this.props.mapPosition) {
+      console.log(this.props.mapPosition)
       this.state.map.setCenter({
-        lat: parseFloat(this.props.form.formMapPosition.lat),
-        lng: parseFloat(this.props.form.formMapPosition.lng)
+        lat: parseFloat(this.props.mapPosition.lat),
+        lng: parseFloat(this.props.mapPosition.lng)
       })
       this.state.map.setZoom(13)
     }
@@ -70,7 +55,7 @@ class MapContainer extends Component {
 
   onMapClick = (mapProps, map, clickEvent) => {
     if (this.props.ui.selectLocationMode) {
-      this.props.setFormMapPosition({
+      this.props.setMapPosition({
         lat: clickEvent.latLng.lat(),
         lng: clickEvent.latLng.lng()
       })
@@ -121,30 +106,20 @@ class MapContainer extends Component {
       ))
 
     return (
-      <div className={containerStyle}>
+      <div className={cx(containerStyle, 'bp3-light')}>
         <MapHeader map={mapInfo} className={noflex} />
-        <Dialog isOpen={this.props.mapInfo.error}>
-          <NonIdealState
-            intent='danger'
-            title='Map not found'
-            icon='error'
-            action={
-              <Link to='/'>
-                <Button icon='home' text='Home' intent='primary' />
-              </Link>
-            }
-            description="I'm sorry, we weren't able to find that map."
-          />
-        </Dialog>
+        <MapNotFound isOpen={this.props.mapInfo.error} />
 
         <MyMap
           className='map'
-          center={this.state.position}
+          initialCenter={{ lat: 27, lng: -10 }}
           onReady={this.onMapReady}
           google={google}
-          zoom={14}
+          zoom={3}
+          minZoom={3}
+          maxZoom={16}
           gestureHandling='greedy'
-          styles={mapStyles}
+          styles={mapStyles[0]}
           mapTypeControlOptions={{
             style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
             position: google.maps.ControlPosition.TOP_RIGHT
@@ -188,7 +163,9 @@ const MarkerRenderOld = ({ markers }) => (
   </div>
 )
 
-const Loading = () => <div><Spinner /></div>
+const Loading = () => (
+  <div className={css`margin-top: 25%;`}><Spinner size={200} /></div>
+)
 
 const noflex = css`
   flex: none;
@@ -206,7 +183,7 @@ const Connected = connect(
     mapInfo: state.map,
     markers: state.markers,
     ui: state.ui,
-    form: state.formMapPosition
+    mapPosition: state.mapPosition
   }),
   {
     fetchMap,
@@ -214,7 +191,7 @@ const Connected = connect(
     closeNewMarkerForm,
     openInfoWindow,
     closeInfoWindow,
-    setFormMapPosition,
+    setMapPosition,
     exitSelectLocationMode
   }
 )(MapContainer)

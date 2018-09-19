@@ -1,6 +1,5 @@
-import React from 'react'
 import ReactDOM from 'react-dom'
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react'
+import { Map } from 'google-maps-react'
 
 const evtNames = [
   'ready',

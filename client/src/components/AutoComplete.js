@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { setFormMapPosition } from '../reducers/formmapposition'
+import { setMapPosition } from '../reducers/mapposition'
 import { InputGroup } from '@blueprintjs/core'
 
 class AutoComplete extends Component {
@@ -39,7 +39,7 @@ class AutoComplete extends Component {
         map.setCenter(place.geometry.location)
         map.setZoom(13)
       } */
-      this.props.setFormMapPosition({
+      this.props.setMapPosition({
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng()
       })
@@ -89,4 +89,4 @@ function enableEnterKey (input) {
   input.attachEvent = addEventListenerWrapper
 }
 
-export default connect(null, { setFormMapPosition })(AutoComplete)
+export default connect(null, { setMapPosition })(AutoComplete)

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { InfoWindow } from 'google-maps-react'
-import { H1, H2, H3, Popover, Button } from '@blueprintjs/core'
+import { H3 } from '@blueprintjs/core'
 import { css, injectGlobal } from 'emotion'
 
 const MarkerInfo = props => {

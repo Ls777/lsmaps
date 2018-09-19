@@ -1,7 +1,6 @@
 import React from 'react'
 import { css } from 'emotion'
 import { connect } from 'react-redux'
-import * as Yup from 'yup'
 import {
   ButtonGroup,
   Button,
@@ -9,11 +8,7 @@ import {
   Menu,
   MenuItem,
   MenuDivider,
-  Popover,
-  NumericInput,
-  InputGroup,
-  FormGroup,
-  Card
+  Popover
 } from '@blueprintjs/core'
 
 import NewMarkerForm from './NewMarkerForm'

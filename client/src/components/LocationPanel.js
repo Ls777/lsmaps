@@ -4,43 +4,50 @@ import {
   FormGroup,
   ControlGroup,
   InputGroup,
+  NumericInput,
   Button,
   H5,
   H2
 } from '@blueprintjs/core'
-import { css } from 'emotion'
+import { css, injectGlobal } from 'emotion'
 
 import AutoComplete from './AutoComplete'
-import MapContextMenu from './MapContextMenu'
 
 import { enterSelectLocationMode, closeNewMarkerForm } from '../reducers/ui'
-import { setFormMapPosition } from '../reducers/formmapposition'
+import { setMapPosition } from '../reducers/mapposition'
+
+injectGlobal`
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+`
 
 class LocationPanel extends Component {
-  handlePositionChange = e => {
-    if (e.keyCode === 69) return
-
-    console.log(e)
-
+  handlePositionChange = (num, str, name) => {
     const newPosition = {}
-    newPosition[e.target.name] = Number(e.target.value)
-    this.props.setFormMapPosition({
-      ...this.props.form.formMapPosition,
+    newPosition[name] = Number(num)
+    this.props.setMapPosition({
+      ...this.props.mapPosition,
       ...newPosition
     })
   }
 
-  openDetailsPanel () {
+  openDetailsPanel = () => {
     this.props.openPanel({
       component: DetailsPanel,
-      title: 'Settings',
+      title: 'Details',
       props: { ...this.props }
     })
   }
 
   render () {
-    const { form, map, google, enterSelectLocationMode } = this.props
-    console.log(form.formMapPosition)
+    const { mapPosition, map, google, enterSelectLocationMode } = this.props
+    console.log(mapPosition)
     return (
       <Fragment>
         <div className={className}>
@@ -60,20 +67,36 @@ class LocationPanel extends Component {
             labelFor='position'
             labelInfo='(advanced)'
           >
-            <ControlGroup fill id='position'>
-              <InputGroup
+            <ControlGroup id='position'>
+              <NumericInput
                 name='lat'
                 type='number'
-                onChange={this.handlePositionChange}
-                value={form.formMapPosition.lat}
+                min={-85.05}
+                max={85.05}
+                majorStepSize={0.1}
+                stepSize={0.01}
+                minorStepSize={0.001}
+                onValueChange={(num, str) =>
+                  this.handlePositionChange(num, str, 'lat')}
+                value={mapPosition.lat}
                 placeholder='Latitude'
+                clampValueOnBlur
+                fill
               />
-              <InputGroup
+              <NumericInput
                 name='lng'
                 type='number'
-                onChange={this.handlePositionChange}
-                value={form.formMapPosition.lng}
+                min={-180}
+                max={180}
+                majorStepSize={0.1}
+                stepSize={0.01}
+                minorStepSize={0.001}
+                onValueChange={(num, str) =>
+                  this.handlePositionChange(num, str, 'lng')}
+                value={mapPosition.lng}
                 placeholder='Longitude'
+                clampValueOnBlur
+                fill
               />
             </ControlGroup>
           </FormGroup>
@@ -91,12 +114,8 @@ class LocationPanel extends Component {
             </Button>
             <Button
               className={css`align-self: flex-end;`}
-              onClick={() =>
-                this.props.openPanel({
-                  component: DetailsPanel,
-                  title: 'Details',
-                  props: { ...this.props }
-                })}
+              disabled={mapPosition.lng === '' || mapPosition.lat === ''}
+              onClick={this.openDetailsPanel}
               text='Next'
               rightIcon='arrow-right'
             />
@@ -109,7 +128,7 @@ class LocationPanel extends Component {
 
 class DetailsPanel extends React.Component {
   render () {
-    return this.props.render(this.props.formik)
+    return this.props.render()
   }
 }
 
@@ -120,7 +139,7 @@ const className = css`
   justify-content: center;
   margin: auto;
   width: 400px;
-  padding: 40px 5vw 20px;
+  padding: 30px 3vw;
   h5 {
     margin: 15px auto 15px;
   }
@@ -133,7 +152,7 @@ const buttonBox = css`
 
 export default connect(
   state => ({
-    form: state.formMapPosition
+    mapPosition: state.mapPosition
   }),
-  { enterSelectLocationMode, setFormMapPosition, closeNewMarkerForm }
+  { enterSelectLocationMode, setMapPosition, closeNewMarkerForm }
 )(LocationPanel)

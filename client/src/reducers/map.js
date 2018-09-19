@@ -25,6 +25,7 @@ export const newMap = map => {
     try {
       const response = await createMap(map)
       dispatch(setMap({ id: response.mapId, ...map }))
+      console.log(response)
     } catch (err) {
       console.log('====================================')
       console.log(err)

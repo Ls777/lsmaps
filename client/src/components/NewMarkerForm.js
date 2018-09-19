@@ -1,45 +1,23 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Formik, Field } from 'formik'
+import { Formik } from 'formik'
 import { newMarker } from '../reducers/marker.js'
-import { Redirect } from 'react-router-dom'
 import {
   enterSelectLocationMode,
   exitSelectLocationMode,
   closeNewMarkerForm
 } from '../reducers/ui.js'
 
-import { setFormMapPosition } from '../reducers/formmapposition'
+import { setMapPosition } from '../reducers/mapposition.js'
 
 import * as Yup from 'yup'
 
-import {
-  Button,
-  NumericInput,
-  InputGroup,
-  FormGroup,
-  ControlGroup,
-  Card,
-  Dialog,
-  H2,
-  H5,
-  IPanelProps,
-  PanelStack,
-  IPanel,
-  TextArea
-} from '@blueprintjs/core'
+import { Button, Dialog, PanelStack } from '@blueprintjs/core'
 
-import AutoComplete from './AutoComplete.js'
 import LocationPanel from './LocationPanel'
 import { CustomTextField, CustomTextArea } from './CommonForm'
 
 import { css } from 'emotion'
-
-const initialValues = {
-  name: '',
-  url: '',
-  description: ''
-}
 
 const markerSchema = Yup.object().shape({
   name: Yup.string()
@@ -58,9 +36,15 @@ class NewMarkerForm extends Component {
       ui,
       map,
       google,
-      formMapPosition,
+      mapPosition,
       newMarker
     } = this.props
+
+    const initialValues = {
+      name: '',
+      url: '',
+      description: ''
+    }
 
     const onSubmit = (values, actions) => {
       const submitObj = {}
@@ -70,8 +54,8 @@ class NewMarkerForm extends Component {
         }
       }
       submitObj.mapId = mapId
-      submitObj.lat = formMapPosition.formMapPosition.lat
-      submitObj.lng = formMapPosition.formMapPosition.lng
+      submitObj.lat = mapPosition.lat
+      submitObj.lng = mapPosition.lng
 
       newMarker(submitObj).then(r => console.log('z'))
 
@@ -111,63 +95,59 @@ class NewMarkerForm extends Component {
                   component: LocationPanel,
                   title: 'Location',
                   props: {
-                    formik: formik,
                     google: google,
                     map: map,
-                    render: () => {
-                      console.log(formik)
-                      return (
-                        <div>
-                          <form
-                            onSubmit={formik.handleSubmit}
-                            className={className}
-                          >
-                            <CustomTextField
-                              name='name'
-                              label='Name'
-                              placeholder='Name'
-                              fill
-                              required
-                            />
-                            {formik.errors.name && formik.touched.name
-                              ? <div>{formik.errors.firstName}</div>
-                              : null}
-                            <CustomTextField
-                              name='url'
-                              label='Website'
-                              placeholder='Url'
-                              fill
-                            />
-                            <CustomTextArea
-                              name='description'
-                              label='Description'
-                              placeholder='Description'
-                              fill
-                            />
-                            <div className={buttonBox}>
-                              <Button
-                                intent='danger'
-                                icon='small-cross'
-                                minimal
-                                onClick={() => {
-                                  formik.handleReset()
-                                  closeNewMarkerForm()
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                type='submit'
-                                intent='primary'
-                                rightIcon='dot'
-                              >
-                                Create Marker
-                              </Button>
-                            </div>
-                          </form>
-                        </div>
-                      )
-                    }
+                    render: () => (
+                      <div>
+                        <form
+                          onSubmit={formik.handleSubmit}
+                          className={className}
+                        >
+                          <CustomTextField
+                            name='name'
+                            label='Name'
+                            placeholder='Name'
+                            fill
+                            required
+                          />
+                          {formik.errors.name && formik.touched.name
+                            ? <div>{formik.errors.name}</div>
+                            : null}
+                          <CustomTextField
+                            name='url'
+                            label='Website'
+                            placeholder='Url'
+                            fill
+                          />
+                          <CustomTextArea
+                            name='description'
+                            label='Description'
+                            placeholder='Description'
+                            fill
+                          />
+                          <div className={buttonBox}>
+                            <Button
+                              intent='danger'
+                              icon='small-cross'
+                              minimal
+                              onClick={() => {
+                                formik.handleReset()
+                                closeNewMarkerForm()
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type='submit'
+                              intent='primary'
+                              rightIcon='dot'
+                            >
+                              Create Marker
+                            </Button>
+                          </div>
+                        </form>
+                      </div>
+                    )
                   }
                 }}
               />
@@ -196,21 +176,21 @@ const className = css`
   align-items: stretch;
   justify-content: center;
   margin: auto;
-  padding: 20px;
   width: 400px;
+  padding: 20px 3vw;
 `
 
 export default connect(
   state => ({
     mapId: state.map.id,
     ui: state.ui,
-    formMapPosition: state.formMapPosition
+    mapPosition: state.mapPosition
   }),
   {
     newMarker,
     enterSelectLocationMode,
     exitSelectLocationMode,
     closeNewMarkerForm,
-    setFormMapPosition
+    setMapPosition
   }
 )(NewMarkerForm)

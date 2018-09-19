@@ -1,23 +1,26 @@
 import React, { Component, Fragment } from 'react'
 import NewMapForm from './NewMapForm'
 import {
-  Button,
-  NumericInput,
-  InputGroup,
-  FormGroup,
-  Card,
-  Dialog,
-  Spinner,
-  Callout,
-  Divider,
   H1,
-  H2,
-  NonIdealState
+  Navbar,
+  NavbarDivider,
+  NavbarGroup,
+  NavbarHeading,
+  Button
 } from '@blueprintjs/core'
+import { css } from 'emotion'
 
 const Home = props => (
   <Fragment>
-    <H1>LsMaps </H1>
+    <Navbar>
+      <NavbarGroup>
+        <NavbarHeading>
+          <H1 className={css`margin-bottom: 0px;`}>LsMaps</H1>
+        </NavbarHeading>
+        <NavbarDivider />
+        <Button minimal icon='home' text='Home' />
+      </NavbarGroup>
+    </Navbar>
     <NewMapForm />
   </Fragment>
 )
