@@ -12,9 +12,9 @@ import { setMapPosition } from '../reducers/mapposition.js'
 
 import * as Yup from 'yup'
 
-import { Button, Dialog, PanelStack } from '@blueprintjs/core'
+import { Button } from '@blueprintjs/core'
 
-import LocationPanel from './LocationPanel'
+import NewMarkerFormDialog from './NewMarkerFormDialog'
 import { CustomTextField, CustomTextArea } from './CommonForm'
 
 import { css } from 'emotion'
@@ -81,77 +81,54 @@ class NewMarkerForm extends Component {
             return null
           }
           return (
-            <Dialog
-              className={css`padding-bottom: 5px;`}
-              isOpen={ui.showNewMarkerForm}
-              title='New Marker'
-              backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
-              onClose={closeNewMarkerForm}
-              canEscapeKeyClose={false}
-            >
-              <PanelStack
-                className={panelClass}
-                initialPanel={{
-                  component: LocationPanel,
-                  title: 'Location',
-                  props: {
-                    google: google,
-                    map: map,
-                    render: () => (
-                      <div>
-                        <form
-                          onSubmit={formik.handleSubmit}
-                          className={className}
-                        >
-                          <CustomTextField
-                            name='name'
-                            label='Name'
-                            placeholder='Name'
-                            fill
-                            required
-                          />
-                          {formik.errors.name && formik.touched.name
-                            ? <div>{formik.errors.name}</div>
-                            : null}
-                          <CustomTextField
-                            name='url'
-                            label='Website'
-                            placeholder='Url'
-                            fill
-                          />
-                          <CustomTextArea
-                            name='description'
-                            label='Description'
-                            placeholder='Description'
-                            fill
-                          />
-                          <div className={buttonBox}>
-                            <Button
-                              intent='danger'
-                              icon='small-cross'
-                              minimal
-                              onClick={() => {
-                                formik.handleReset()
-                                closeNewMarkerForm()
-                              }}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type='submit'
-                              intent='primary'
-                              rightIcon='dot'
-                            >
-                              Create Marker
-                            </Button>
-                          </div>
-                        </form>
-                      </div>
-                    )
-                  }
-                }}
-              />
-            </Dialog>
+            <NewMarkerFormDialog
+              google={google}
+              map={map}
+              render={() => (
+                <div>
+                  <form onSubmit={formik.handleSubmit} className={className}>
+                    <CustomTextField
+                      name='name'
+                      label='Name'
+                      placeholder='Name'
+                      fill
+                      required
+                    />
+                    {formik.errors.name && formik.touched.name
+                      ? <div>{formik.errors.name}</div>
+                      : null}
+                    <CustomTextField
+                      name='url'
+                      label='Website'
+                      placeholder='Url'
+                      fill
+                    />
+                    <CustomTextArea
+                      name='description'
+                      label='Description'
+                      placeholder='Description'
+                      fill
+                    />
+                    <div className={buttonBox}>
+                      <Button
+                        intent='danger'
+                        icon='small-cross'
+                        minimal
+                        onClick={() => {
+                          formik.handleReset()
+                          closeNewMarkerForm()
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type='submit' intent='primary' rightIcon='dot'>
+                        Create Marker
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              )}
+            />
           )
         }}
       />
@@ -162,12 +139,6 @@ class NewMarkerForm extends Component {
 const buttonBox = css`
   display: flex;
   justify-content: flex-end;
-`
-
-const panelClass = css`
-  height: 360px;
-  margin-top: 1px;
-  padding: 0px;
 `
 
 const className = css`

@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import { Formik, Field } from 'formik'
 import { newMap } from '../reducers/map.js'
 import { withRouter, Redirect } from 'react-router-dom'
-import { Button, Card, H3 } from '@blueprintjs/core'
+import { Button, Card } from '@blueprintjs/core'
 import { css } from 'emotion'
 
 import * as Yup from 'yup'
 
 import { CustomTextField, CustomTextArea } from './CommonForm'
+import { closeNewMapForm } from '../reducers/ui'
 
 const mapSchema = Yup.object().shape({
   name: Yup.string()
@@ -21,13 +22,12 @@ const mapSchema = Yup.object().shape({
 
 const initialValues = { name: '', url: '', description: '' }
 
-const NewMapForm = ({ newMap, map }) => {
+const NewMapForm = ({ newMap, map, closeNewMapForm }) => {
   if (map.id) {
     return <Redirect to={`/maps/${map.id}`} />
   }
   return (
-    <Card className={className}>
-      <H3>New Map</H3>
+    <Card>
       <Formik
         initialValues={initialValues}
         validationSchema={mapSchema}
@@ -39,6 +39,7 @@ const NewMapForm = ({ newMap, map }) => {
             }
           }
           newMap(submitObj).then(r => console.log(r))
+          closeNewMapForm()
 
           /* setTimeout(() => {
             alert(JSON.stringify(submitObj, null, 2))
@@ -55,7 +56,7 @@ const NewMapForm = ({ newMap, map }) => {
           isSubmitting
           /* and other goodies */
         }) => (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className={className}>
             <CustomTextField
               name='name'
               label='Name'
@@ -84,12 +85,12 @@ const NewMapForm = ({ newMap, map }) => {
 }
 
 const className = css`
-max-width: 500px;
-margin: auto;
+padding: 20px 5vw;
 `
 
 const NewMapFormWithRouter = withRouter(NewMapForm)
 
-export default connect(state => ({ map: state.map }), { newMap })(
-  NewMapFormWithRouter
-)
+export default connect(state => ({ map: state.map }), {
+  newMap,
+  closeNewMapForm
+})(NewMapFormWithRouter)

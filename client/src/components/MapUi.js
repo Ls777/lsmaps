@@ -79,14 +79,6 @@ const input = css`
   max-width: 600px;
 `
 
-/* const input = css`
-  max-width: 50%;
-  margin-left: 130px;
-  padding-top: 5px;
-  z-index: 10;
-  position: fixed;
-` */
-
 export default connect(state => ({ ui: state.ui }), {
   openNewMarkerForm,
   exitSelectLocationMode
