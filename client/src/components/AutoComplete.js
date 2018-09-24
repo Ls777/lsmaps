@@ -17,13 +17,8 @@ class AutoComplete extends Component {
   renderAutoComplete = () => {
     const { google, map } = this.props
     if (!google || !map) {
-      console.log('no google or map')
-      console.log(google)
-      console.log(map)
       return
     }
-
-    console.log('yes google yes map')
 
     const autocomplete = new google.maps.places.Autocomplete(this.autocomplete)
     enableEnterKey(this.autocomplete)

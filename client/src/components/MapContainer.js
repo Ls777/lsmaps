@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { fetchMap } from '../reducers/map'
 import { fetchMarkers } from '../reducers/marker'
 import {
-  closeNewMarkerForm,
+  closeMarkerForm,
   openInfoWindow,
   closeInfoWindow,
   exitSelectLocationMode
@@ -15,6 +15,7 @@ import { setMapPosition } from '../reducers/mapposition'
 import mapStyles from '../lib/mapStyles'
 import MapUi from './MapUi'
 import NewMarkerForm from './NewMarkerForm'
+import NewMapFormDialog from './NewMapFormDialog'
 import MapHeader from './MapHeader'
 import MarkerInfo from './MarkerInfo'
 import MapContextMenu from './MapContextMenu'
@@ -146,6 +147,7 @@ class MapContainer extends Component {
             onClose={() => this.setState({ contextMenuPosition: null })}
           />
           <NewMarkerForm />
+          <NewMapFormDialog />
         </MyMap>
       </div>
     )
@@ -188,7 +190,7 @@ const Connected = connect(
   {
     fetchMap,
     fetchMarkers,
-    closeNewMarkerForm,
+    closeMarkerForm,
     openInfoWindow,
     closeInfoWindow,
     setMapPosition,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Overlay, Menu, MenuItem, MenuDivider, Icon } from '@blueprintjs/core'
-import { openNewMarkerForm } from '../reducers/ui'
+import { openMarkerForm } from '../reducers/ui'
 import { setMapPosition } from '../reducers/mapposition'
 import { css } from 'emotion'
 
@@ -12,12 +12,12 @@ export const MapContextMenu = ({
   lat,
   lng,
   onClose,
-  openNewMarkerForm,
+  openMarkerForm,
   setMapPosition
 }) => {
   const newMarker = () => {
     setMapPosition({ lat, lng })
-    openNewMarkerForm()
+    openMarkerForm()
     onClose()
   }
   return (
@@ -46,6 +46,4 @@ export const MapContextMenu = ({
   )
 }
 
-export default connect(null, { openNewMarkerForm, setMapPosition })(
-  MapContextMenu
-)
+export default connect(null, { openMarkerForm, setMapPosition })(MapContextMenu)

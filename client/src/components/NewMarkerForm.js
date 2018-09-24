@@ -5,7 +5,7 @@ import { newMarker } from '../reducers/marker.js'
 import {
   enterSelectLocationMode,
   exitSelectLocationMode,
-  closeNewMarkerForm
+  closeMarkerForm
 } from '../reducers/ui.js'
 
 import { setMapPosition } from '../reducers/mapposition.js'
@@ -32,7 +32,7 @@ class NewMarkerForm extends Component {
   render () {
     const {
       mapId,
-      closeNewMarkerForm,
+      closeMarkerForm,
       ui,
       map,
       google,
@@ -68,7 +68,7 @@ class NewMarkerForm extends Component {
 
     const onCancel = formik => {
       formik.handleReset()
-      closeNewMarkerForm()
+      closeMarkerForm()
     }
 
     return (
@@ -116,7 +116,7 @@ class NewMarkerForm extends Component {
                         minimal
                         onClick={() => {
                           formik.handleReset()
-                          closeNewMarkerForm()
+                          closeMarkerForm()
                         }}
                       >
                         Cancel
@@ -161,7 +161,7 @@ export default connect(
     newMarker,
     enterSelectLocationMode,
     exitSelectLocationMode,
-    closeNewMarkerForm,
+    closeMarkerForm,
     setMapPosition
   }
 )(NewMarkerForm)

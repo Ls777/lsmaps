@@ -1,4 +1,4 @@
-import { getMap, createMap } from '../lib/mapService'
+import { getMap, createMap, editMap } from '../lib/mapService'
 
 const initState = {
   loading: false,
@@ -6,11 +6,12 @@ const initState = {
   name: null,
   url: null,
   description: null,
-  theme_id: null
+  theme_id: null,
+  error: null
 }
 
 export const MAP_SET = 'MAP_SET'
-export const MAP_CLEAR = 'MAP_SET'
+export const MAP_CLEAR = 'MAP_CLEAR'
 
 export const setMap = map => ({ type: MAP_SET, payload: map })
 export const clearMap = () => ({ type: MAP_CLEAR })
@@ -22,8 +23,10 @@ export const fetchMap = id => {
       const map = await getMap(id)
       dispatch(setMap({ loading: false, ...map }))
     } catch (err) {
+      dispatch(setMap({ error: err }))
       console.log('====================================')
       console.log(err)
+      console.log(err.response)
       console.log('====================================')
     }
   }
@@ -34,11 +37,26 @@ export const newMap = map => {
     try {
       dispatch(setMap({ loading: true }))
       const response = await createMap(map)
-      dispatch(setMap({ loading: false, id: response.mapId }))
-      console.log(response)
+      dispatch(setMap({ loading: false, ...map, id: response.mapId }))
     } catch (err) {
       console.log('====================================')
       console.log(err)
+      console.log(err.response)
+      console.log('====================================')
+    }
+  }
+}
+
+export const updateMap = map => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(setMap({ loading: true }))
+      const response = await editMap(getState().map.id, map)
+      dispatch(setMap({ loading: false, ...map }))
+    } catch (err) {
+      console.log('====================================')
+      console.log(err)
+      console.log(err.response)
       console.log('====================================')
     }
   }

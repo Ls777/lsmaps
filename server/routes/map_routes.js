@@ -3,9 +3,9 @@ module.exports = function (app, db) {
     const mapId = req.params.id
     db.getMap(mapId).then(data => res.send(data[0])).catch(error => {
       if (error.error === 'data not found') {
-        res.send({ error: 'map not found' })
+        res.status(500).send({ error: 'map not found' })
       } else {
-        res.send(error)
+        res.status(500).send(error)
       }
     })
   })
@@ -29,7 +29,7 @@ module.exports = function (app, db) {
     db
       .newMap(name, url, description, themeId)
       .then(result => res.send({ mapId: result.insertId }))
-      .catch(error => res.send({ error: error }))
+      .catch(error => res.status(500).send({ error: error }))
   })
 
   app.put('/maps/:id', (req, res) => {
@@ -39,6 +39,6 @@ module.exports = function (app, db) {
     db
       .updateMap(mapId, { theme_id: themeId, ...body })
       .then(result => res.send(result))
-      .catch(error => res.send({ error: error }))
+      .catch(error => res.status(500).send({ error: error }))
   })
 }

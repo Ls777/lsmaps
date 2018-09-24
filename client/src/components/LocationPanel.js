@@ -13,7 +13,7 @@ import { css, injectGlobal } from 'emotion'
 
 import AutoComplete from './AutoComplete'
 
-import { enterSelectLocationMode, closeNewMarkerForm } from '../reducers/ui'
+import { enterSelectLocationMode, closeMarkerForm } from '../reducers/ui'
 import { setMapPosition } from '../reducers/mapposition'
 
 injectGlobal`
@@ -107,7 +107,7 @@ class LocationPanel extends Component {
               minimal
               onClick={() => {
                 this.props.formik.handleReset()
-                this.props.closeNewMarkerForm()
+                this.props.closeMarkerForm()
               }}
             >
               Cancel
@@ -154,5 +154,5 @@ export default connect(
   state => ({
     mapPosition: state.mapPosition
   }),
-  { enterSelectLocationMode, setMapPosition, closeNewMarkerForm }
+  { enterSelectLocationMode, setMapPosition, closeMarkerForm }
 )(LocationPanel)

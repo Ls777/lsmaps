@@ -12,16 +12,20 @@ import {
 } from '@blueprintjs/core'
 
 import NewMarkerForm from './NewMarkerForm'
-import { openNewMarkerForm, exitSelectLocationMode } from '../reducers/ui'
+import {
+  openMarkerForm,
+  openMapForm,
+  exitSelectLocationMode
+} from '../reducers/ui'
 import AutoComplete from './AutoComplete'
 
-const FileMenu = ({ openNewMarkerForm, ...props }) => (
+const FileMenu = ({ openMarkerForm, openMapForm, ...props }) => (
   <Menu className={props.className}>
     <MenuItem
       text='New Marker'
       icon='document'
       {...props}
-      onClick={openNewMarkerForm}
+      onClick={openMapForm}
     />
     <MenuItem text='From spreadsheet' icon='folder-shared' {...props} />
     <MenuDivider />
@@ -52,12 +56,6 @@ const MapUi = ({
       <Button icon='add' onClick={exitSelectLocationMode} />
       <Button icon='remove' />
     </ButtonGroup>
-    {/* <InputGroup
-      className={input}
-      type='search'
-      inputRef={inputRef}
-      leftIcon='geolocation'
-    /> */}
     <AutoComplete
       className={input}
       map={menuProps.map}
@@ -80,6 +78,7 @@ const input = css`
 `
 
 export default connect(state => ({ ui: state.ui }), {
-  openNewMarkerForm,
+  openMarkerForm,
+  openMapForm,
   exitSelectLocationMode
 })(MapUi)

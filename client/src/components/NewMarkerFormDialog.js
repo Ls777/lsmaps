@@ -4,23 +4,17 @@ import { connect } from 'react-redux'
 import { Button, Dialog, PanelStack } from '@blueprintjs/core'
 import LocationPanel from './LocationPanel'
 
-import { closeNewMarkerForm } from '../reducers/ui'
+import { closeMarkerForm } from '../reducers/ui'
 
 import { css } from 'emotion'
 
-const NewMarkerFormDialog = ({
-  google,
-  map,
-  render,
-  ui,
-  closeNewMarkerForm
-}) => (
+const NewMarkerFormDialog = ({ google, map, render, ui, closeMarkerForm }) => (
   <Dialog
     className={css`padding-bottom: 5px;`}
     isOpen={ui.showNewMarkerForm}
     title='New Marker'
     backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
-    onClose={closeNewMarkerForm}
+    onClose={closeMarkerForm}
     canEscapeKeyClose={false}
   >
     <PanelStack
@@ -48,5 +42,5 @@ export default connect(
   state => ({
     ui: state.ui
   }),
-  { closeNewMarkerForm }
+  { closeMarkerForm }
 )(NewMarkerFormDialog)

@@ -13,7 +13,6 @@ export default ({ map }) => (
     <H2>{map.name}</H2>
     <Divider />
     <Text ellipsize className='bp3-text-large'>{map.description}</Text>
-
   </header>
 )
 
