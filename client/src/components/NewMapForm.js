@@ -24,7 +24,7 @@ const initialValues = { name: '', url: '', description: '' }
 
 const NewMapForm = ({ newMap, map, closeNewMapForm }) => {
   if (map.id) {
-    return <Redirect to={`/maps/${map.id}`} />
+    // return <Redirect to={`/maps/${map.id}`} />
   }
   return (
     <Card>
@@ -39,7 +39,6 @@ const NewMapForm = ({ newMap, map, closeNewMapForm }) => {
             }
           }
           newMap(submitObj).then(r => console.log(r))
-          closeNewMapForm()
 
           /* setTimeout(() => {
             alert(JSON.stringify(submitObj, null, 2))
