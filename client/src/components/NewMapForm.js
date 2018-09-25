@@ -10,7 +10,6 @@ import * as Yup from 'yup'
 
 import { CustomTextField, CustomTextArea } from './CommonForm'
 import { closeMapForm } from '../reducers/ui'
-import { editMap } from '../lib/mapService.js'
 
 const mapSchema = Yup.object().shape({
   name: Yup.string()
@@ -27,7 +26,7 @@ class NewMapForm extends Component {
   }
 
   getInitialValues = () => {
-    if (this.props.edit) {
+    if (this.props.ui.formEdit) {
       const initialValues = {}
       Object.entries(this.props.map).forEach(([key, value]) => {
         initialValues[key] = value === null ? '' : value
@@ -43,12 +42,6 @@ class NewMapForm extends Component {
 
     const submitObj = {}
 
-    /* for (let key in values) {
-      if (values[key] !== initialValues[key]) {
-        submitObj[key] = values[key]
-      }
-    } */
-
     Object.entries(values).forEach(([key, value]) => {
       if (value !== initialValues[key]) {
         submitObj[key] = value
@@ -57,7 +50,7 @@ class NewMapForm extends Component {
 
     console.log(submitObj)
 
-    const submitFunc = this.props.edit
+    const submitFunc = this.props.ui.formEdit
       ? this.props.updateMap
       : this.props.newMap
 
@@ -73,7 +66,7 @@ class NewMapForm extends Component {
   }
 
   render () {
-    const { newMap, map, closeMapForm, edit } = this.props
+    const { newMap, map, closeMapForm, ui } = this.props
     const initialValues = this.getInitialValues()
 
     if (this.state.submitSuccess) {
@@ -115,7 +108,9 @@ class NewMapForm extends Component {
                 placeholder='Description'
                 fill
               />
-              <Button type='submit'>Submit</Button>
+              <Button type='submit'>
+                {ui.formEdit ? 'Update' : 'Create New'}
+              </Button>
             </form>
           )}
         />
@@ -130,7 +125,7 @@ padding: 20px 5vw;
 
 const NewMapFormWithRouter = withRouter(NewMapForm)
 
-export default connect(state => ({ map: state.map }), {
+export default connect(state => ({ map: state.map, ui: state.ui }), {
   newMap,
   updateMap,
   closeMapForm

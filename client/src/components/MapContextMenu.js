@@ -33,9 +33,10 @@ export const MapContextMenu = ({
           text='New Marker Here'
           onClick={newMarker}
         />
-        <MenuItem icon='new-object' text='New object' />
-        <MenuItem icon='new-link' text='New link' />
+        <MenuItem icon='new-object' text='Center Map Here' />
         <MenuDivider />
+        <MenuItem text='Edit Map Details' icon='floppy-disk' />
+        <MenuItem text='Change Map Theme' icon='floppy-disk' />
         <MenuItem
           icon='cog'
           labelElement={<Icon icon='share' />}

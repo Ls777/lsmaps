@@ -15,6 +15,7 @@ export const fetchMarkers = id => {
     } catch (err) {
       console.log('====================================')
       console.log(err)
+      console.log(err.response)
       console.log('====================================')
       return err
     }
@@ -26,11 +27,13 @@ export const newMarker = marker => {
     try {
       const response = await createMarker(marker)
       console.log(response)
+
       dispatch(addMarker({ id: response.markerId, ...marker }))
       dispatch(closeMarkerForm())
     } catch (err) {
       console.log('====================================')
       console.log(err)
+      console.log(err.response)
       console.log('====================================')
       return err
     }

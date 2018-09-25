@@ -19,9 +19,15 @@ const UI_CLEAR = 'UI_CLEAR'
 
 export const clearUi = () => ({ type: UI_CLEAR })
 
-export const openMapForm = () => ({ type: OPEN_MAP_FORM })
+export const openMapForm = (edit = false) => ({
+  type: OPEN_MAP_FORM,
+  payload: edit
+})
 export const closeMapForm = () => ({ type: CLOSE_MAP_FORM })
-export const openMarkerForm = () => ({ type: OPEN_MARKER_FORM })
+export const openMarkerForm = (edit = false) => ({
+  type: OPEN_MARKER_FORM,
+  payload: edit
+})
 export const closeMarkerForm = () => ({ type: CLOSE_MARKER_FORM })
 export const openInfoWindow = (marker, id) => ({
   type: OPEN_INFO_WINDOW,
@@ -38,13 +44,13 @@ export const exitSelectLocationMode = () => ({
 export default (state = initState, action) => {
   switch (action.type) {
     case OPEN_MAP_FORM:
-      return { ...state, showNewMapForm: true }
+      return { ...state, showNewMapForm: true, formEdit: action.payload }
     case CLOSE_MAP_FORM:
-      return { ...state, showNewMapForm: false }
+      return { ...state, showNewMapForm: false, formEdit: false }
     case OPEN_MARKER_FORM:
-      return { ...state, showNewMarkerForm: true }
+      return { ...state, showNewMarkerForm: true, formEdit: action.payload }
     case CLOSE_MARKER_FORM:
-      return { ...state, showNewMarkerForm: false }
+      return { ...state, showNewMarkerForm: false, formEdit: false }
     case OPEN_INFO_WINDOW:
       return {
         ...state,

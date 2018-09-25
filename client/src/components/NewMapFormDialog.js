@@ -11,11 +11,11 @@ import { css } from 'emotion'
 import NewMapForm from './NewMapForm'
 import NewMarkerForm from './NewMarkerForm'
 
-const NewMapFormDialog = ({ ui, closeMapForm, edit }) => (
+const NewMapFormDialog = ({ ui, closeMapForm }) => (
   <Dialog
     className={css`padding-bottom: 5px;`}
     isOpen={ui.showNewMapForm}
-    title={edit ? 'Edit Map' : 'New Map'}
+    title={ui.formEdit ? 'Edit Map' : 'New Map'}
     backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
     onClose={closeMapForm}
   >

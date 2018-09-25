@@ -1,4 +1,5 @@
 import { getMap, createMap, editMap } from '../lib/mapService'
+import { newMarker } from './marker'
 
 const initState = {
   loading: false,
@@ -59,6 +60,24 @@ export const updateMap = map => {
       console.log(err.response)
       console.log('====================================')
     }
+  }
+}
+
+export const cloneMap = () => {
+  return async (dispatch, getState) => {
+    const { map, markers } = getState()
+    const { name, description, url } = map
+    await dispatch(newMap({ name, description, url }))
+    const newId = getState().map.id
+    const promises = []
+    markers.forEach(marker => {
+      const { id, map_id, ...newMarkerObj } = marker
+      newMarkerObj.mapId = newId
+      console.log(newMarkerObj)
+      promises.push(dispatch(newMarker(newMarkerObj)))
+    })
+
+    await Promise.all(promises)
   }
 }
 
