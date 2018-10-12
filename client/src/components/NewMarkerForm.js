@@ -14,7 +14,7 @@ import * as Yup from 'yup'
 
 import { Button } from '@blueprintjs/core'
 
-import NewMarkerFormDialog from './NewMarkerFormDialog'
+import { NewMarkerFormDialog } from '../components'
 import { CustomTextField, CustomTextArea } from './CommonForm'
 
 import { css } from 'emotion'

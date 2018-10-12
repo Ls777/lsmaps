@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Marker, GoogleApiWrapper } from 'google-maps-react'
 import { Link } from 'react-router-dom'
-import { MyMap } from './MyMap'
 import { connect } from 'react-redux'
 import { fetchMap } from '../reducers/map'
 import { fetchMarkers } from '../reducers/marker'
@@ -13,13 +12,16 @@ import {
 } from '../reducers/ui'
 import { setMapPosition } from '../reducers/mapposition'
 import mapStyles from '../lib/mapStyles'
-import MapUi from './MapUi'
-import NewMarkerForm from './NewMarkerForm'
-import NewMapFormDialog from './NewMapFormDialog'
-import MapHeader from './MapHeader'
-import MarkerInfo from './MarkerInfo'
-import MapContextMenu from './MapContextMenu'
-import MapNotFound from './MapNotFound'
+import MyMap from '../lib/MyMap'
+import {
+  MapUi,
+  NewMarkerForm,
+  NewMapFormDialog,
+  MapHeader,
+  MarkerInfo,
+  MapContextMenu,
+  MapNotFound
+} from '../components'
 import { css, cx } from 'emotion'
 
 import { Button, Dialog, NonIdealState, Spinner } from '@blueprintjs/core'

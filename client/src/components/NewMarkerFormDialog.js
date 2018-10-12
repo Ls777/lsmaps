@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Button, Dialog, PanelStack } from '@blueprintjs/core'
-import LocationPanel from './LocationPanel'
+import { LocationPanel } from '../components'
 
 import { closeMarkerForm } from '../reducers/ui'
 

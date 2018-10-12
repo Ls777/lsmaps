@@ -11,7 +11,7 @@ import {
 } from '@blueprintjs/core'
 import { css, injectGlobal } from 'emotion'
 
-import AutoComplete from './AutoComplete'
+import { AutoComplete } from '../components'
 
 import { enterSelectLocationMode, closeMarkerForm } from '../reducers/ui'
 import { setMapPosition } from '../reducers/mapposition'

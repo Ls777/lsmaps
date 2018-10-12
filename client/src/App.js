@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import './App.css'
-import MapContainer from './components/MapContainer'
-import NewMapForm from './components/NewMapForm'
+import MapContainer from './routes/MapContainer'
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 import { css } from 'emotion'
-import { Button, NonIdealState } from '@blueprintjs/core'
-import Home from './components/Home'
+import Home from './routes/Home'
+import P404 from './routes/P404'
 
 class App extends Component {
   render () {
@@ -20,24 +19,7 @@ class App extends Component {
                 <MapContainer fetchId={props.match.params.mapId} />
               )}
             />
-            <Route
-              render={() => (
-                <NonIdealState
-                  icon='home'
-                  title='404 Page not found'
-                  description="I'm sorry, this page doesn't exist. Please check your URL or return to our home page"
-                  action={
-                    <Link to='/'>
-                      <Button
-                        icon='home'
-                        text='Return to Home page'
-                        intent='primary'
-                      />
-                    </Link>
-                  }
-                />
-              )}
-            />
+            <Route render={() => <P404 />} />
           </Switch>
         </div>
       </Router>

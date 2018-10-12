@@ -12,7 +12,6 @@ import {
   Popover
 } from '@blueprintjs/core'
 
-import NewMarkerForm from './NewMarkerForm'
 import {
   openMarkerForm,
   openMapForm,
@@ -20,8 +19,7 @@ import {
 } from '../reducers/ui'
 import { cloneMap } from '../reducers/map'
 
-import AutoComplete from './AutoComplete'
-import { FormikProvider } from 'formik'
+import { AutoComplete } from '../components'
 
 class MapMenu extends React.Component {
   cloneThisMap = () => {

@@ -1,15 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Button, Dialog, PanelStack } from '@blueprintjs/core'
-import LocationPanel from './LocationPanel'
+import { Dialog } from '@blueprintjs/core'
 
 import { closeMapForm } from '../reducers/ui'
 
 import { css } from 'emotion'
 
-import NewMapForm from './NewMapForm'
-import NewMarkerForm from './NewMarkerForm'
+import { NewMapForm } from '../components'
 
 const NewMapFormDialog = ({ ui, closeMapForm }) => (
   <Dialog
