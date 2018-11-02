@@ -84,6 +84,7 @@ class NewMarkerForm extends Component {
             <NewMarkerFormDialog
               google={google}
               map={map}
+              formik={formik}
               render={() => (
                 <div>
                   <form onSubmit={formik.handleSubmit} className={className}>
@@ -114,10 +115,7 @@ class NewMarkerForm extends Component {
                         intent='danger'
                         icon='small-cross'
                         minimal
-                        onClick={() => {
-                          formik.handleReset()
-                          closeMarkerForm()
-                        }}
+                        onClick={this.onCancel}
                       >
                         Cancel
                       </Button>

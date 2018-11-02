@@ -27,13 +27,17 @@ export const MapContextMenu = ({
       hasBackdrop={false}
       className={css`top: ${y}px; left: ${x}px; position: absolute;`}
     >
-      <Menu>
+      <Menu onContextMenu={e => e.preventDefault()}>
         <MenuItem
           icon='new-text-box'
           text='New Marker Here'
           onClick={newMarker}
         />
-        <MenuItem icon='new-object' text='Center Map Here' />
+        <MenuItem
+          icon='new-object'
+          text='Center Map Here'
+          onClick={() => setMapPosition({ lat, lng })}
+        />
         <MenuDivider />
         <MenuItem text='Edit Map Details' icon='floppy-disk' />
         <MenuItem text='Change Map Theme' icon='floppy-disk' />
@@ -46,5 +50,7 @@ export const MapContextMenu = ({
     </Overlay>
   )
 }
+
+const MapMenu = props => {}
 
 export default connect(null, { openMarkerForm, setMapPosition })(MapContextMenu)

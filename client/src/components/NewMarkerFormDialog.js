@@ -8,7 +8,14 @@ import { closeMarkerForm } from '../reducers/ui'
 
 import { css } from 'emotion'
 
-const NewMarkerFormDialog = ({ google, map, render, ui, closeMarkerForm }) => (
+const NewMarkerFormDialog = ({
+  google,
+  map,
+  render,
+  formik,
+  ui,
+  closeMarkerForm
+}) => (
   <Dialog
     className={css`padding-bottom: 5px;`}
     isOpen={ui.showNewMarkerForm}
@@ -25,7 +32,8 @@ const NewMarkerFormDialog = ({ google, map, render, ui, closeMarkerForm }) => (
         props: {
           google: google,
           map: map,
-          render: render
+          render: render,
+          formik: formik
         }
       }}
     />

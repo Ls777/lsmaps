@@ -28,7 +28,7 @@ import { Button, Dialog, NonIdealState, Spinner } from '@blueprintjs/core'
 
 class MapContainer extends Component {
   state = {
-    contextMenuPosition: null,
+    contextMenuProps: null,
     map: null
   }
 
@@ -68,6 +68,22 @@ class MapContainer extends Component {
     }
   }
 
+  onMarkerClick = (props, markerInstance, e) => {
+    console.log(e)
+    e.va.preventDefault()
+    if (e.va.button === 0) {
+      this.props.openInfoWindow(markerInstance, markerInstance.id)
+    } else {
+      this.setState({
+        contextMenuProps: {
+          type: 'marker',
+          x: e.va.clientX,
+          y: e.va.clientY
+        }
+      })
+    }
+  }
+
   onMapReady = (mapProps, map) => {
     const { google } = mapProps
     this.setState({ map: map })
@@ -76,7 +92,8 @@ class MapContainer extends Component {
         function () {
           if (!this.props.ui.selectLocationMode) {
             this.setState({
-              contextMenuPosition: {
+              contextMenuProps: {
+                type: 'map',
                 x: event.va.clientX,
                 y: event.va.clientY,
                 lat: event.latLng.lat(),
@@ -102,8 +119,7 @@ class MapContainer extends Component {
           title={marker.name}
           position={{ lat: marker.lat, lng: marker.lng }}
           name={marker.name}
-          onClick={(props, markerInstance) =>
-            this.props.openInfoWindow(markerInstance, marker.id)}
+          onMouseup={this.onMarkerClick}
         />
       ))
 
@@ -141,11 +157,11 @@ class MapContainer extends Component {
           <MapUi />
           <MapContextMenu
             isOpen={
-              this.state.contextMenuPosition !== null &&
+              this.state.contextMenuProps !== null &&
                 !this.props.ui.selectLocationMode
             }
-            {...this.state.contextMenuPosition}
-            onClose={() => this.setState({ contextMenuPosition: null })}
+            {...this.state.contextMenuProps}
+            onClose={() => this.setState({ contextMenuProps: null })}
           />
           <NewMarkerForm />
           <NewMapFormDialog />
@@ -154,17 +170,6 @@ class MapContainer extends Component {
     )
   }
 }
-
-const MarkerRenderOld = ({ markers }) => (
-  <div>
-    <h3>markers {markers.length}</h3>
-    <ul>
-      {markers.length > 0 &&
-        markers.map(marker => <li key={marker.id}>name : {marker.name}</li>)}
-
-    </ul>
-  </div>
-)
 
 const Loading = () => (
   <div className={css`margin-top: 25%;`}><Spinner size={200} /></div>
