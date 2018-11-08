@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Formik } from 'formik'
-import { newMarker } from '../reducers/marker.js'
+import { newMarker, updateMarker } from '../reducers/marker.js'
 import {
   enterSelectLocationMode,
   exitSelectLocationMode,
@@ -37,15 +37,30 @@ class NewMarkerForm extends Component {
       map,
       google,
       mapPosition,
-      newMarker
+      newMarker,
+      markers
     } = this.props
 
-    const initialValues = {
-      name: '',
-      url: '',
-      description: ''
+    let marker = {}
+    if (ui.formEdit) {
+      marker = markers.filter(
+        marker => marker.id === ui.markerFormEditMarkerId
+      )[0]
     }
 
+    const initialValues = ui.formEdit
+      ? {
+        name: marker.name,
+        url: marker.url || '',
+        description: marker.description || ''
+      }
+      : {
+        name: '',
+        url: '',
+        description: ''
+      }
+
+    console.log(initialValues)
     const onSubmit = (values, actions) => {
       const submitObj = {}
       for (let key in values) {
@@ -57,7 +72,13 @@ class NewMarkerForm extends Component {
       submitObj.lat = mapPosition.lat
       submitObj.lng = mapPosition.lng
 
-      newMarker(submitObj).then(r => console.log('z'))
+      if (ui.formEdit) {
+        updateMarker(submitObj, ui.markerFormEditMarkerId).then(r =>
+          console.log('z')
+        )
+      } else {
+        newMarker(submitObj).then(r => console.log('z'))
+      }
 
       setTimeout(() => {
         alert(JSON.stringify(submitObj, null, 2))
@@ -73,6 +94,7 @@ class NewMarkerForm extends Component {
 
     return (
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         onSubmit={onSubmit}
         validationSchema={markerSchema}
@@ -153,6 +175,7 @@ export default connect(
   state => ({
     mapId: state.map.id,
     ui: state.ui,
+    markers: state.markers,
     mapPosition: state.mapPosition
   }),
   {

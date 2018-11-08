@@ -14,12 +14,13 @@ const NewMarkerFormDialog = ({
   render,
   formik,
   ui,
+  markers,
   closeMarkerForm
 }) => (
   <Dialog
     className={css`padding-bottom: 5px;`}
     isOpen={ui.showNewMarkerForm}
-    title='New Marker'
+    title={ui.formEdit ? 'Edit Marker' : 'New Marker'}
     backdropClassName={css`background-color: rgba(76, 86, 100, 0.3);`}
     onClose={closeMarkerForm}
     canEscapeKeyClose={false}
@@ -48,7 +49,8 @@ const panelClass = css`
 
 export default connect(
   state => ({
-    ui: state.ui
+    ui: state.ui,
+    markers: state.markers
   }),
   { closeMarkerForm }
 )(NewMarkerFormDialog)

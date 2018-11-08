@@ -2,6 +2,7 @@ const initState = {
   showMapForm: false,
   showMarkerForm: false,
   formEdit: false,
+  markerFormEditMarkerId: null,
   selectLocationMode: false,
   infoWindowMarker: null,
   infoWindowMarkerId: null
@@ -24,9 +25,9 @@ export const openMapForm = (edit = false) => ({
   payload: edit
 })
 export const closeMapForm = () => ({ type: CLOSE_MAP_FORM })
-export const openMarkerForm = (edit = false) => ({
+export const openMarkerForm = (edit = false, markerId = null) => ({
   type: OPEN_MARKER_FORM,
-  payload: edit
+  payload: { edit, markerId }
 })
 export const closeMarkerForm = () => ({ type: CLOSE_MARKER_FORM })
 export const openInfoWindow = (marker, id) => ({
@@ -48,9 +49,19 @@ export default (state = initState, action) => {
     case CLOSE_MAP_FORM:
       return { ...state, showNewMapForm: false, formEdit: false }
     case OPEN_MARKER_FORM:
-      return { ...state, showNewMarkerForm: true, formEdit: action.payload }
+      return {
+        ...state,
+        showNewMarkerForm: true,
+        formEdit: action.payload.edit,
+        markerFormEditMarkerId: action.payload.markerId
+      }
     case CLOSE_MARKER_FORM:
-      return { ...state, showNewMarkerForm: false, formEdit: false }
+      return {
+        ...state,
+        showNewMarkerForm: false,
+        formEdit: false,
+        markerFormEditMarkerId: null
+      }
     case OPEN_INFO_WINDOW:
       return {
         ...state,

@@ -40,6 +40,8 @@ export const newMarker = marker => {
   }
 }
 
+export const updateMarker = (marker, id) => {}
+
 export default (state = [], action) => {
   switch (action.type) {
     case SET_MARKERS:

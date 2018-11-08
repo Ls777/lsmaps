@@ -19,7 +19,7 @@ import {
   NewMapFormDialog,
   MapHeader,
   MarkerInfo,
-  MapContextMenu,
+  ContextMenu,
   MapNotFound
 } from '../components'
 import { css, cx } from 'emotion'
@@ -77,8 +77,11 @@ class MapContainer extends Component {
       this.setState({
         contextMenuProps: {
           type: 'marker',
+          markerId: markerInstance.id,
           x: e.va.clientX,
-          y: e.va.clientY
+          y: e.va.clientY,
+          lat: e.latLng.lat(),
+          lng: e.latLng.lng()
         }
       })
     }
@@ -155,7 +158,7 @@ class MapContainer extends Component {
           {markerRender}
           <MarkerInfo {...this.props} />
           <MapUi />
-          <MapContextMenu
+          <ContextMenu
             isOpen={
               this.state.contextMenuProps !== null &&
                 !this.props.ui.selectLocationMode
